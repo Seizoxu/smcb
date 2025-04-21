@@ -27,3 +27,6 @@ gradle-app.setting
 
 # Binaries.
 bin/
+
+# Credentials
+src/main/resources/

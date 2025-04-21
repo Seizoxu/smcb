@@ -25,15 +25,20 @@ repositories {
 }
 
 dependencies {
+	implementation libs.dotenv
     api libs.net.dv8tion.jda
     api libs.ch.qos.logback.logback.classic
     api libs.com.google.code.gson.gson
+    implementation libs.google.api.client
+    implementation libs.google.auth
+    implementation libs.google.sheets
+    implementation libs.mariadb
 }
 
 group = 'com.seizoxu'
-version = '0.0.1-SNAPSHOT'
+version = '0.2.0'
 description = 'Seizoxu\'s Mouse-Only Weekly Challenge'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 publishing {
     publications {

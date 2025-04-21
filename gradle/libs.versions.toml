@@ -2,11 +2,21 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
+dotenv = "5.2.2"
 ch-qos-logback-logback-classic = "1.5.18"
 com-google-code-gson-gson = "2.13.0"
 net-dv8tion-jda = "5.3.2"
+google-api-client = "2.0.0"
+google-auth-library = "1.20.0"
+google-sheets = "v4-rev20220927-2.0.0"
+mariadb = "3.3.1"
 
 [libraries]
+dotenv = { group = "io.github.cdimascio", name = "java-dotenv", version.ref = "dotenv" }
 ch-qos-logback-logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "ch-qos-logback-logback-classic" }
 com-google-code-gson-gson = { module = "com.google.code.gson:gson", version.ref = "com-google-code-gson-gson" }
 net-dv8tion-jda = { module = "net.dv8tion:JDA", version.ref = "net-dv8tion-jda" }
+google-api-client = { group = "com.google.api-client", name = "google-api-client", version.ref = "google-api-client" }
+google-auth = { group = "com.google.auth", name = "google-auth-library-oauth2-http", version.ref = "google-auth-library" }
+google-sheets = { group = "com.google.apis", name = "google-api-services-sheets", version.ref = "google-sheets" }
+mariadb = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version.ref = "mariadb" }

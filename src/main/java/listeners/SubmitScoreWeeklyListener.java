@@ -46,7 +46,6 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 		
 		// Retrieve beatmap ID and user ID.
 		JsonObject scoreData = scoreResponse.get();
-		System.out.println(scoreData);
 		int beatmapId = scoreData.getAsJsonObject("beatmap").get("id").getAsInt();
 		int userId = scoreData.get("user_id").getAsInt();
 		int totalScore = scoreData.get("total_score").getAsInt();
@@ -85,6 +84,11 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 				modsList.stream().collect(Collectors.joining(", ")),
 				timestamp)
 		.queue();
+		
+		
+		//TODO: send score to sql db
+		
+		//TODO: retrieve scores from db and send to gsheets
 	}
 	
 
