@@ -16,7 +16,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class SubmitScoreWeeklyListener extends ListenerAdapter
 {
-	private static SlashCommandInteractionEvent event;
 	private static List<String> allowedMods = List.of(
 			"EZ", "NF", "HT",
 			"HR", "SD", "PF", "DT", "NC", "HD", "FL",
@@ -31,14 +30,12 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 			return;
 		}
 
-		this.event = event;
-
 		// Received reply, send "we are processing."
 		event.deferReply().queue();
 		
 		// Get score ID and retrieve Score object.
 		String link = event.getOption("link").getAsString();
-		Optional<JsonObject> scoreResponse = retrieveScore(link);
+		Optional<JsonObject> scoreResponse = retrieveScore(event, link);
 		if (!scoreResponse.isPresent())
 		{
 			return;
@@ -61,7 +58,7 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 				.toList();
 		if (!invalidMods.isEmpty())
 		{
-			sendFailed("Mod(s) not allowed: " + String.join(", ", invalidMods));
+			sendFailed(event, "Mod(s) not allowed: " + String.join(", ", invalidMods));
 			return;
 		}
 		
@@ -97,25 +94,25 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 	 * @param link - Must be of the new score system in the format of "https://osu.ppy.sh/scores/:id"
 	 * @return
 	 */
-	private static Optional<JsonObject> retrieveScore(String link)
+	private static Optional<JsonObject> retrieveScore(SlashCommandInteractionEvent event, String link)
 	{
 		Matcher matcher = Pattern.compile("^(https?:\\/\\/)?osu\\.ppy\\.sh\\/scores\\/(\\d+)$").matcher(link);
 		if (!matcher.matches())
 		{
-			sendFailed("Invalid score link: link format rejected.");
+			sendFailed(event, "Invalid score link: link format rejected.");
 			return Optional.empty();
 		}
 		
 		Optional<JsonObject> response = BotConfig.osuApi.getScoreById(matcher.group(2));
 		if (!response.isPresent())
 		{
-			sendFailed("Unable to retrieve score data.");
+			sendFailed(event, "Unable to retrieve score data.");
 			return Optional.empty();
 		}
 		
 		if (response.get().has("error"))
 		{
-			sendFailed(String.format("Invalid score link: API error - `%s`", response.get().get("error")));
+			sendFailed(event, String.format("Invalid score link: API error - `%s`", response.get().get("error")));
 			return Optional.empty();
 		}
 		
@@ -127,7 +124,7 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 	 * Sends a failure message.
 	 * @param message
 	 */
-	private static void sendFailed(String message)
+	private static void sendFailed(SlashCommandInteractionEvent event, String message)
 	{
 		event.getHook().sendMessage(message).queue();
 	}
