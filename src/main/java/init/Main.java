@@ -3,6 +3,7 @@ import listeners.Ping;
 import listeners.SubmitScoreWeeklyListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class Main
 {
@@ -15,6 +16,7 @@ public class Main
 						new ReadyListener(),
 						new Ping(),
 						new SubmitScoreWeeklyListener())
+				.enableIntents(GatewayIntent.MESSAGE_CONTENT)
 				.build();
 		
 		// Wait until JDA is ready; can finish other tasks above in the meanwhile.
