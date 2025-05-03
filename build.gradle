@@ -32,7 +32,9 @@ dependencies {
     implementation libs.google.api.client
     implementation libs.google.auth
     implementation libs.google.sheets
-    implementation libs.mariadb
+    implementation libs.jdbi.core
+    implementation libs.jdbi.sqlobject
+    implementation libs.mysql.connector
 }
 
 group = 'com.seizoxu'

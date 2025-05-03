@@ -1,15 +1,22 @@
 package listeners;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.SQLSyntaxErrorException;
+import java.sql.SQLTimeoutException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import dataStructures.OsuScore;
 import init.BotConfig;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -35,14 +42,100 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 		
 		// Get score ID and retrieve Score object.
 		String link = event.getOption("link").getAsString();
-		Optional<JsonObject> scoreResponse = retrieveScore(event, link);
-		if (!scoreResponse.isPresent())
+		Optional<OsuScore> scoreResponse = retrieveScore(event, link);
+		if (scoreResponse.isEmpty())
 		{
 			return;
 		}
+		OsuScore score = scoreResponse.get();
+
+		// Send score to MOWC DB.
+		try
+		{
+			BotConfig.mowcDb.getScoreDao().insertOrUpdateScore(score.getScoreId(), score.getUserId(), score.getMapId(),
+					score.getScore(), Arrays.stream(score.getMods()).collect(Collectors.joining(",")), score.getTimestamp());
+		}
+		catch (UnableToExecuteStatementException e)
+		{
+			Throwable cause = e.getCause();
+
+			if (cause instanceof SQLIntegrityConstraintViolationException)
+			{
+				//TODO: Could also be if user isn't added in the users table; handle later.
+				sendFailed(event, String.format("Error: Submitted score with map ID %d is not in the weekly map list.", score.getScoreId()));
+				return;
+			}
+			else if (cause instanceof SQLSyntaxErrorException)
+			{
+				sendFailed(event, "Error: SQL Syntax Error.");
+				System.err.println(String.format("[ERROR] SQLSyntaxErrorException | %s%n", Instant.now().toString()));
+				cause.printStackTrace();
+				return;
+			}
+			else if (cause instanceof SQLTimeoutException)
+			{
+				sendFailed(event, "Error: Unable to send query.");
+				System.err.println(String.format("[ERROR] SQLTimeoutException | %s%n", Instant.now().toString()));
+				cause.printStackTrace();
+				return;
+			}
+			else
+			{
+				sendFailed(event, "Error: Unknown error.");
+				System.err.println(String.format("[ERROR] SQLException | %s%n", Instant.now().toString()));
+				cause.printStackTrace();
+				return;
+			}
+		}
+		
+		event.getHook().sendMessageFormat(
+				"Score submitted!%n"
+				+ "Beatmap ID: %d%n"
+				+ "User ID: %d%n"
+				+ "Total Score: %d%n"
+				+ "Mods: %s%n"
+				+ "Timestamp: %s%n",
+				score.getMapId(),
+				score.getUserId(),
+				score.getScore(),
+				score.getMods(),
+				score.getTimestamp())
+		.queue();
+		//TODO: make command to show list of unverified users, and change their verified status
+		//TODO: retrieve scores from db and send to gsheets
+	}
+	
+
+	/**
+	 * Retrieves osu! API v2 "Score" Structure from a given score link.
+	 * @param link - Must be of the new score system in the format of "https://osu.ppy.sh/scores/:id"
+	 * @return
+	 */
+	private static Optional<OsuScore> retrieveScore(SlashCommandInteractionEvent event, String link)
+	{
+		Matcher matcher = Pattern.compile("^(https?:\\/\\/)?osu\\.ppy\\.sh\\/scores\\/(\\d+)$").matcher(link);
+		if (!matcher.matches())
+		{
+			sendFailed(event, "Invalid score link: link format rejected.");
+			return Optional.empty();
+		}
+		
+		long scoreId = Long.parseLong(matcher.group(2));
+		Optional<JsonObject> response = BotConfig.osuApi.getScoreById(String.valueOf(scoreId));
+		if (response.isEmpty())
+		{
+			sendFailed(event, "Unable to retrieve score data.");
+			return Optional.empty();
+		}
+		
+		if (response.get().has("error"))
+		{
+			sendFailed(event, String.format("Invalid score link: API error - `%s`", response.get().get("error")));
+			return Optional.empty();
+		}
 		
 		// Retrieve beatmap ID and user ID.
-		JsonObject scoreData = scoreResponse.get();
+		JsonObject scoreData = response.get();
 		int beatmapId = scoreData.getAsJsonObject("beatmap").get("id").getAsInt();
 		int userId = scoreData.get("user_id").getAsInt();
 		int totalScore = scoreData.get("total_score").getAsInt();
@@ -59,7 +152,7 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 		if (!invalidMods.isEmpty())
 		{
 			sendFailed(event, "Mod(s) not allowed: " + String.join(", ", invalidMods));
-			return;
+			return Optional.empty();
 		}
 		
 		// Remove CL debuff.
@@ -68,55 +161,7 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 			totalScore = (int)Math.round((double)totalScore/0.96);
 		}
 		
-
-		event.getHook().sendMessageFormat(
-				"Beatmap ID: %d%n"
-				+ "User ID: %d%n"
-				+ "Total Score: %d%n"
-				+ "Mods: %s%n"
-				+ "Timestamp: %s%n",
-				beatmapId,
-				userId,
-				totalScore,
-				modsList.stream().collect(Collectors.joining(", ")),
-				timestamp)
-		.queue();
-		
-		
-		//TODO: send score to sql db
-		
-		//TODO: retrieve scores from db and send to gsheets
-	}
-	
-
-	/**
-	 * Retrieves osu! API v2 "Score" Structure from a given score link.
-	 * @param link - Must be of the new score system in the format of "https://osu.ppy.sh/scores/:id"
-	 * @return
-	 */
-	private static Optional<JsonObject> retrieveScore(SlashCommandInteractionEvent event, String link)
-	{
-		Matcher matcher = Pattern.compile("^(https?:\\/\\/)?osu\\.ppy\\.sh\\/scores\\/(\\d+)$").matcher(link);
-		if (!matcher.matches())
-		{
-			sendFailed(event, "Invalid score link: link format rejected.");
-			return Optional.empty();
-		}
-		
-		Optional<JsonObject> response = BotConfig.osuApi.getScoreById(matcher.group(2));
-		if (!response.isPresent())
-		{
-			sendFailed(event, "Unable to retrieve score data.");
-			return Optional.empty();
-		}
-		
-		if (response.get().has("error"))
-		{
-			sendFailed(event, String.format("Invalid score link: API error - `%s`", response.get().get("error")));
-			return Optional.empty();
-		}
-		
-		return response;
+		return Optional.of(new OsuScore(scoreId, userId, beatmapId, totalScore, modsList.toArray(new String[0]), timestamp));
 	}
 	
 

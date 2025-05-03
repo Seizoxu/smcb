@@ -9,7 +9,8 @@ net-dv8tion-jda = "5.3.2"
 google-api-client = "2.0.0"
 google-auth-library = "1.20.0"
 google-sheets = "v4-rev20220927-2.0.0"
-mariadb = "3.3.1"
+jdbi3 = "3.49.0"
+mysql-connector = "9.2.0"
 
 [libraries]
 dotenv = { group = "io.github.cdimascio", name = "java-dotenv", version.ref = "dotenv" }
@@ -19,4 +20,6 @@ net-dv8tion-jda = { module = "net.dv8tion:JDA", version.ref = "net-dv8tion-jda" 
 google-api-client = { group = "com.google.api-client", name = "google-api-client", version.ref = "google-api-client" }
 google-auth = { group = "com.google.auth", name = "google-auth-library-oauth2-http", version.ref = "google-auth-library" }
 google-sheets = { group = "com.google.apis", name = "google-api-services-sheets", version.ref = "google-sheets" }
-mariadb = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version.ref = "mariadb" }
+jdbi-core = { group = "org.jdbi", name = "jdbi3-core", version.ref = "jdbi3" }
+jdbi-sqlobject = { group = "org.jdbi", name = "jdbi3-sqlobject", version.ref = "jdbi3" }
+mysql-connector = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysql-connector" }

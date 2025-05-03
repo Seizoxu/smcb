@@ -1,12 +1,14 @@
 package init;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import wrappers.DatabaseWrapper;
 import wrappers.OsuWrapper;
 
 public class BotConfig
 {
 	public static final String PREFIX = "\\";
 	public static OsuWrapper osuApi;
+	public static DatabaseWrapper mowcDb;
 	private static final Dotenv DOTENV = Dotenv.configure()
 			.directory("./")
 			.ignoreIfMalformed()
@@ -27,6 +29,9 @@ public class BotConfig
 		try
 		{
 			osuApi = new OsuWrapper(OSU_CLIENT_ID, OSU_CLIENT_SECRET, OSU_LEGACY_TOKEN);
+			
+			mowcDb = new DatabaseWrapper(String.format("jdbc:mysql://%s/mowc", DB_IP), DB_USER, DB_PASSWORD);
+			mowcDb.createTables();
 		}
 		catch (Exception e)
 		{
