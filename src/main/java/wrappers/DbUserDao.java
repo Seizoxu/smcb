@@ -1,8 +1,12 @@
 package wrappers;
 
+import java.util.List;
+
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+
+import dataStructures.OsuPlayer;
 
 public interface DbUserDao
 {
@@ -15,8 +19,11 @@ public interface DbUserDao
 			""")
 	void insertUser(@Bind("user_id") long userId, @Bind("username") String username, @Bind("country_code") String countryCode, @Bind("verified") boolean isVerified);
 	
+	@SqlQuery("SELECT EXISTS (SELECT 1 FROM users WHERE user_id = :user_id)")
+	boolean userExists(@Bind("user_id") long userId);
+	
 	@SqlQuery("SELECT user_id, username FROM users WHERE verified = 0;")
-	void getUnverifiedUsers();
+	List<OsuPlayer> getUnverifiedUsers();
 	
 	@SqlUpdate("UPDATE users SET verified = TRUE WHERE user_id = :user_id")
 	void verifyUser(@Bind("user_id") long userId);

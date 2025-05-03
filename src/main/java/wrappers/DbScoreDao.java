@@ -21,7 +21,7 @@ public interface DbScoreDao
 			""")
 	void insertOrUpdateScore(
 			@Bind("score_id") long scoreId,
-			@Bind("user_id") int userId,
+			@Bind("user_id") long userId,
 			@Bind("map_id") int mapId,
 			@Bind("score") int score,
 			@Bind("mods") String mods,

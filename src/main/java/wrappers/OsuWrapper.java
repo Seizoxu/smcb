@@ -258,5 +258,25 @@ public class OsuWrapper
 		catch (JsonParseException e) {return Optional.empty();}
 		catch (IOException | InterruptedException e) {return Optional.empty();}
 	}
+	
+	
+	/**
+	 * Returns a user, given its user ID
+	 * @param userId
+	 * @return Optional<JsonObject> = osu! API v2 "UserExtended" Structure.
+	 */
+	public Optional<JsonObject> getUserById(long userId)
+	{
+		try
+		{
+			String jsonStr = requestData(String.format(
+					"users/%d/osu",
+					userId));
+			
+			return Optional.of(JsonParser.parseString(jsonStr).getAsJsonObject());
+		}
+		catch (JsonParseException e) {return Optional.empty();}
+		catch (IOException | InterruptedException e) {return Optional.empty();}
+	}
 }
 

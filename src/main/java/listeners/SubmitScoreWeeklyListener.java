@@ -16,6 +16,7 @@ import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import dataStructures.OsuPlayer;
 import dataStructures.OsuScore;
 import init.BotConfig;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -52,6 +53,19 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 		// Send score to MOWC DB.
 		try
 		{
+			boolean userExists = BotConfig.mowcDb.getUserDao().userExists(score.getUserId());
+			if (!userExists)
+			{
+				Optional<OsuPlayer> userResponse = retrieveUser(event, score.getUserId());
+				if (userResponse.isEmpty())
+				{
+					return;
+				}
+				OsuPlayer user = userResponse.get();
+				
+				BotConfig.mowcDb.getUserDao().insertUser(user.getUserId(), user.getUsername(), user.getCountryCode(), user.isVerified());
+			}
+			
 			BotConfig.mowcDb.getScoreDao().insertOrUpdateScore(score.getScoreId(), score.getUserId(), score.getMapId(),
 					score.getScore(), Arrays.stream(score.getMods()).collect(Collectors.joining(",")), score.getTimestamp());
 		}
@@ -61,7 +75,6 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 
 			if (cause instanceof SQLIntegrityConstraintViolationException)
 			{
-				//TODO: Could also be if user isn't added in the users table; handle later.
 				sendFailed(event, String.format("Error: Submitted score with map ID %d is not in the weekly map list.", score.getScoreId()));
 				return;
 			}
@@ -88,6 +101,7 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 			}
 		}
 		
+		// Send score submission success
 		event.getHook().sendMessageFormat(
 				"Score submitted!%n"
 				+ "Beatmap ID: %d%n"
@@ -98,7 +112,7 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 				score.getMapId(),
 				score.getUserId(),
 				score.getScore(),
-				score.getMods(),
+				Arrays.stream(score.getMods()).collect(Collectors.joining(",")),
 				score.getTimestamp())
 		.queue();
 		//TODO: make command to show list of unverified users, and change their verified status
@@ -127,8 +141,7 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 			sendFailed(event, "Unable to retrieve score data.");
 			return Optional.empty();
 		}
-		
-		if (response.get().has("error"))
+		else if (response.get().has("error"))
 		{
 			sendFailed(event, String.format("Invalid score link: API error - `%s`", response.get().get("error")));
 			return Optional.empty();
@@ -162,6 +175,34 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 		}
 		
 		return Optional.of(new OsuScore(scoreId, userId, beatmapId, totalScore, modsList.toArray(new String[0]), timestamp));
+	}
+	
+	
+	/**
+	 * Retrieves an osu! API v2 "UserExtended" Structure simplified into an OsuPlayer structure.
+	 * @param event
+	 * @param userId
+	 * @return Optional<OsuPlayer>
+	 */
+	private static Optional<OsuPlayer> retrieveUser(SlashCommandInteractionEvent event, long userId)
+	{
+		Optional<JsonObject> response = BotConfig.osuApi.getUserById(userId);
+		if (response.isEmpty())
+		{
+			sendFailed(event, "Unable to retrieve score data.");
+			return Optional.empty();
+		}
+		else if (response.get().has("error"))
+		{
+			sendFailed(event, String.format("Invalid score link: API error - `%s`", response.get().get("error")));
+			return Optional.empty();
+		}
+		
+		JsonObject playerData = response.get();
+		String username = playerData.get("username").getAsString();
+		String countryCode = playerData.get("country").getAsJsonObject().get("code").getAsString();
+		
+		return Optional.of(new OsuPlayer(userId, username, countryCode, false));
 	}
 	
 

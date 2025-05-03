@@ -6,14 +6,14 @@ import java.time.Instant;
 public class OsuScore
 {
 	private long scoreId;
-	private int userId;
+	private long userId;
 	private int mapId;
 	private int score;
 	private String[] mods;
 	private Instant timestamp;
 
 	@ConstructorProperties({"score_id", "user_id", "map_id", "mods", "timestamp"})
-	public OsuScore(long scoreId, int userId, int mapId, int score, String[] mods, Instant timestamp)
+	public OsuScore(long scoreId, long userId, int mapId, int score, String[] mods, Instant timestamp)
 	{
 		this.scoreId = scoreId;
 		this.userId = userId;
@@ -26,8 +26,8 @@ public class OsuScore
 	public long getScoreId() {return scoreId;}
 	public void setScoreId(long scoreId) {this.scoreId = scoreId;}
 
-	public int getUserId() {return userId;}
-	public void setUserId(int userId) {this.userId = userId;}
+	public long getUserId() {return userId;}
+	public void setUserId(long userId) {this.userId = userId;}
 
 	public int getMapId() {return mapId;}
 	public void setMapId(int mapId) {this.mapId= mapId;}
