@@ -134,6 +134,26 @@ public class OsuWrapper
 	
 
 	/**
+	 * Returns a user, given its user ID
+	 * @param userId
+	 * @return Optional<JsonObject> = osu! API v2 "UserExtended" Structure.
+	 */
+	public Optional<JsonObject> getUserById(long userId)
+	{
+		try
+		{
+			String jsonStr = requestData(String.format(
+					"users/%d/osu",
+					userId));
+			
+			return Optional.of(JsonParser.parseString(jsonStr).getAsJsonObject());
+		}
+		catch (JsonParseException e) {return Optional.empty();}
+		catch (IOException | InterruptedException e) {return Optional.empty();}
+	}
+	
+
+	/**
 	 * STD PP rankings.
 	 * @param country
 	 * @return Optional<JsonObject> - List of n=50 osu! API v2 "Rankings" Structures.
@@ -153,7 +173,27 @@ public class OsuWrapper
 		catch (IOException | InterruptedException e) {e.printStackTrace(); return Optional.empty();}
 	}
 	
-
+	
+	/**
+	 * Returns beatmap information, given a beatmap ID.
+	 * @param mapId
+	 * @return Optional<JsonObject> - osu! API v2 "BeatmapExtended" Structure.
+	 */
+	public Optional<JsonObject> getBeatmapById(int mapId)
+	{
+		try
+		{
+			String jsonStr = requestData(String.format(
+					"beatmaps/%d",
+					mapId));
+			
+			return Optional.of(JsonParser.parseString(jsonStr).getAsJsonObject());
+		}
+		catch (JsonParseException e) {return Optional.empty();}
+		catch (IOException | InterruptedException e) {e.printStackTrace(); return Optional.empty();}
+	}
+	
+	
 	/**
 	 * Gets all ranked/loved STD beatmaps since a certain date.
 	 * @param sinceDate: A MySQL-formatted DATE String.
@@ -252,26 +292,6 @@ public class OsuWrapper
 			String jsonStr = requestData(String.format(
 					"scores/%s",
 					scoreId));
-			
-			return Optional.of(JsonParser.parseString(jsonStr).getAsJsonObject());
-		}
-		catch (JsonParseException e) {return Optional.empty();}
-		catch (IOException | InterruptedException e) {return Optional.empty();}
-	}
-	
-	
-	/**
-	 * Returns a user, given its user ID
-	 * @param userId
-	 * @return Optional<JsonObject> = osu! API v2 "UserExtended" Structure.
-	 */
-	public Optional<JsonObject> getUserById(long userId)
-	{
-		try
-		{
-			String jsonStr = requestData(String.format(
-					"users/%d/osu",
-					userId));
 			
 			return Optional.of(JsonParser.parseString(jsonStr).getAsJsonObject());
 		}

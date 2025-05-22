@@ -23,6 +23,7 @@ public class BotConfig
 	public static final String DB_USER = getVar("DB_USER");
 	public static final String DB_PASSWORD = getVar("DB_PASSWORD");
 	public static final String GSHEETS_ID = getVar("GSHEETS_ID");
+	public static final long ADMIN_DISCORD_ID = Long.parseLong(getVar("ADMIN_DISCORD_ID"));
 
 	public static void initialise()
 	{

@@ -50,9 +50,11 @@ public class DatabaseWrapper
 					CREATE TABLE IF NOT EXISTS maps (
 						map_id INT PRIMARY KEY,
 						mapset_id INT NOT NULL,
+						week_of_year INT NOT NULL,
 						title VARCHAR(512),
 						artist VARCHAR(255),
 						mapper VARCHAR(255),
+						difficulty_name VARCHAR(255),
 						banner_link TEXT,
 						star_rating FLOAT,
 						ar FLOAT,

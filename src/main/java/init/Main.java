@@ -1,4 +1,5 @@
 package init;
+import listeners.AddMapsListener;
 import listeners.Ping;
 import listeners.SubmitScoreWeeklyListener;
 import net.dv8tion.jda.api.JDA;
@@ -15,7 +16,8 @@ public class Main
 				.addEventListeners(
 						new ReadyListener(),
 						new Ping(),
-						new SubmitScoreWeeklyListener())
+						new SubmitScoreWeeklyListener(),
+						new AddMapsListener())
 				.enableIntents(GatewayIntent.MESSAGE_CONTENT)
 				.build();
 		

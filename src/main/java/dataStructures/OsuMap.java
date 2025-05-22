@@ -6,9 +6,11 @@ public class OsuMap
 {
 	private int mapId;
 	private int mapsetId;
+	private String endDate;
 	private String title;
 	private String artist;
 	private String mapper;
+	private String difficultyName;
 	private double starRating;
 	private double ar;
 	private double od;
@@ -18,15 +20,17 @@ public class OsuMap
 	private int bpm;
 	private String bannerLink;
 
-	@ConstructorProperties({"map_id", "mapset_id", "title", "artist", "mapper", "star_rating", "ar", "od", "hp", "cs", "length_seconds", "bpm", "banner_link"})
-	public OsuMap(int mapId, int mapsetId, String title, String artist, String mapper, double starRating,
-			double ar, double od, double hp, double cs, int lengthSeconds, int bpm, String bannerLink)
+	@ConstructorProperties({"map_id", "mapset_id", "end_date", "title", "artist", "mapper", "difficulty_name", "star_rating", "ar", "od", "hp", "cs", "length_seconds", "bpm", "banner_link"})
+	public OsuMap(int mapId, int mapsetId, String endDate, String title, String artist, String mapper, String difficultyName,
+			double starRating, double ar, double od, double hp, double cs, int lengthSeconds, int bpm, String bannerLink)
 	{
 		this.mapId = mapId;
 		this.mapsetId = mapsetId;
+		this.endDate = endDate;
 		this.title = title;
 		this.artist = artist;
 		this.mapper = mapper;
+		this.difficultyName = difficultyName;
 		this.starRating = starRating;
 		this.ar = ar;
 		this.od = od;
@@ -43,6 +47,9 @@ public class OsuMap
 	public int getMapsetId() {return mapsetId;}
 	public void setMapsetId(int mapsetId) {this.mapsetId = mapsetId;}
 
+	public String getEndDate() {return endDate;}
+	public void setEndDate(String endDate) {this.endDate = endDate;}
+
 	public String getTitle() {return title;}
 	public void setTitle(String title) {this.title = title;}
 
@@ -51,6 +58,9 @@ public class OsuMap
 
 	public String getMapper() {return mapper;}
 	public void setMapper(String mapper) {this.mapper = mapper;}
+
+	public String getDifficultyName() {return difficultyName;}
+	public void setDifficultyName(String difficultyName) {this.difficultyName = difficultyName;}
 
 	public double getStarRating() {return starRating;}
 	public void setStarRating(double starRating) {this.starRating = starRating;}
