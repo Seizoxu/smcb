@@ -82,7 +82,7 @@ public class AddMapsListener extends ListenerAdapter
 	private static Optional<OsuMap> retrieveBeatmap(SlashCommandInteractionEvent event, String link)
 	{
 		// Retrieve map ID from link.
-		Matcher matcher = Pattern.compile("(?:osu\\.ppy\\.sh/(?:beatmapsets/\\d+#osu/|b/))?(\\d+)$").matcher(link);
+		Matcher matcher = Pattern.compile("(?:https://)?(?:osu\\.ppy\\.sh/(?:beatmapsets/\\d+#osu/|b/))?(\\d+)$").matcher(link);
 		if (!matcher.matches())
 		{
 			sendFailed(event, "Invalid map link: link format rejected.");
