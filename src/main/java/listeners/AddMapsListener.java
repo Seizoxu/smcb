@@ -41,7 +41,7 @@ public class AddMapsListener extends ListenerAdapter
 		try
 		{
 			BotConfig.mowcDb.getMapDao().insertMap(map.getMapId(), map.getMapsetId(), map.getEndDate(), map.getTitle(), map.getArtist(),
-					map.getDifficultyName(), map.getMapper(), map.getStarRating(), map.getAr(), map.getOd(), map.getHp(),
+					map.getMapper(), map.getDifficultyName(), map.getStarRating(), map.getAr(), map.getOd(), map.getHp(),
 					map.getCs(), map.getLengthSeconds(), map.getBpm(), map.getBannerLink());
 		}
 		catch (UnableToExecuteStatementException e)
@@ -72,10 +72,11 @@ public class AddMapsListener extends ListenerAdapter
 		}
 
 		// send response
-		event.getHook().sendMessageEmbeds(new EmbedBuilder().addField("",
-				String.format("Submitted map: `%d | %s - %s [%s] (%s)`",
-						map.getMapId(), map.getArtist(), map.getTitle(), map.getDifficultyName(), map.getMapper()),
-				false).build()).queue();
+		event.getHook().sendMessageEmbeds(new EmbedBuilder()
+				.setTitle("Submitted Map")
+				.setDescription(String.format("`%d | %s - %s [%s] (%s)`",
+						map.getMapId(), map.getArtist(), map.getTitle(), map.getDifficultyName(), map.getMapper()))
+				.build()).queue();
 	}
 	
 	
