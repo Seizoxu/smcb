@@ -1,7 +1,10 @@
 package wrappers;
 
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
+
+import dataStructures.OsuMap;
 
 public class DatabaseWrapper
 {
@@ -12,12 +15,14 @@ public class DatabaseWrapper
 	
 	public DatabaseWrapper(String jdbcUrl, String user, String password)
 	{
-		this.jdbi = Jdbi.create(jdbcUrl, user, password);
+		jdbi = Jdbi.create(jdbcUrl, user, password);
 		jdbi.installPlugin(new SqlObjectPlugin());
 		
 		this.userDao = jdbi.onDemand(DbUserDao.class);
 		this.scoreDao = jdbi.onDemand(DbScoreDao.class);
 		this.mapDao = jdbi.onDemand(DbMapDao.class);
+		
+		jdbi.registerRowMapper(ConstructorMapper.factory(OsuMap.class));
 	}
 	
 	public DbUserDao getUserDao()
