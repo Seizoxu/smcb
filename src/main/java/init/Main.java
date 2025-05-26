@@ -1,5 +1,6 @@
 package init;
 import listeners.AddMapsListener;
+import listeners.ListMapsListener;
 import listeners.Ping;
 import listeners.RemoveMapsListener;
 import listeners.SubmitScoreWeeklyListener;
@@ -19,7 +20,8 @@ public class Main
 						new Ping(),
 						new SubmitScoreWeeklyListener(),
 						new AddMapsListener(),
-						new RemoveMapsListener())
+						new RemoveMapsListener(),
+						new ListMapsListener())
 				.enableIntents(GatewayIntent.MESSAGE_CONTENT)
 				.build();
 		

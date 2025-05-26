@@ -22,7 +22,8 @@ public class InitialiseSlashCommands
 				Commands.slash("remove-map", "[Admin CMD] Removes an osu! beatmap from the Mouse-Only Weekly Challenge Database.")
 				.addOption(OptionType.STRING, "link", "An osu! beatmap link/id. Must be a beatmap, and not beatmapSET.", true),
 
-				Commands.slash("list-maps", "Lists osu! beatmaps from the present Mouse-Only Weekly Challenge."),
+				Commands.slash("list-maps", "Lists osu! beatmaps from the present Mouse-Only Weekly Challenge.")
+				.addOption(OptionType.STRING, "end-date", "Get maps that end on a certain date.", false),
 
 				Commands.slash("list-unverified-users", "[Admin CMD] Lists unverified users."),
 

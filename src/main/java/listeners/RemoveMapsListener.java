@@ -1,5 +1,6 @@
 package listeners;
 
+import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLTimeoutException;
 import java.time.Instant;
@@ -53,6 +54,13 @@ public class RemoveMapsListener extends ListenerAdapter
 			{
 				sendFailed(event, "Error: Unable to send query.");
 				System.err.println(String.format("[ERROR] SQLTimeoutException | %s%n", Instant.now().toString()));
+				cause.printStackTrace();
+				return;
+			}
+			else if (cause instanceof SQLException)
+			{
+				sendFailed(event, String.format("Error: SQLException%n```%n%s%n```", cause.getLocalizedMessage()));
+				System.err.println(String.format("[ERROR] SQLException | %s%n", Instant.now().toString()));
 				cause.printStackTrace();
 				return;
 			}

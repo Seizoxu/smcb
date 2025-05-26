@@ -55,6 +55,6 @@ public interface DbMapDao
 	@SqlQuery("SELECT * FROM maps")
 	List<OsuMap> getAllMaps();
 	
-	@SqlQuery("SELECT * FROM maps WHERE end_date = WEEK(:sql_date)")
+	@SqlQuery("SELECT * FROM maps WHERE end_date = :sql_date")
 	List<OsuMap> getMapsOfEndDate(@Bind("sql_date") String sqlDate);
 }
