@@ -15,9 +15,9 @@ public interface DbScoreDao
 			INSERT INTO scores (score_id, user_id, map_id, score, mods, timestamp)
 			VALUES (:score_id, :user_id, :map_id, :score, :mods, :timestamp)
 			ON DUPLICATE KEY UPDATE
-				score = VALUES(score),
-				mods = VALUES(mods),
-				timestamp = VALUES(timestamp)
+				score = IF(VALUES(score) > score, VALUES(score), score),
+				mods = IF(VALUES(score) > score, VALUES(mods), mods),
+				timestamp = IF(VALUES(score) > score, VALUES(timestamp), timestamp)
 			""")
 	void insertOrUpdateScore(
 			@Bind("score_id") long scoreId,
@@ -27,8 +27,11 @@ public interface DbScoreDao
 			@Bind("mods") String mods,
 			@Bind("timestamp") Instant timestamp);
 	
-	@SqlUpdate("DELETE FROM score WHERE user_id = :user_id AND map_id = :map_id")
+	@SqlUpdate("DELETE FROM scores WHERE user_id = :user_id AND map_id = :map_id")
 	void deleteScoreByUserAndMap(@Bind("user_id") long userId, @Bind("map_id") int mapId);
+	
+	@SqlUpdate("DELETE FROM scores WHERE score_id = :score_id")
+	void deleteScoreByScoreId(@Bind("score_id") long scoreId);
 	
 	@SqlQuery("""
 			SELECT s.*, u.username FROM scores s

@@ -65,7 +65,9 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 				
 				BotConfig.mowcDb.getUserDao().insertUser(user.getUserId(), user.getUsername(), user.getCountryCode(), user.isVerified());
 			}
-			
+			//TODO: Check if map < end_date.
+			//TODO: make sure score only updates if score is higher.
+
 			BotConfig.mowcDb.getScoreDao().insertOrUpdateScore(score.getScoreId(), score.getUserId(), score.getMapId(),
 					score.getScore(), Arrays.stream(score.getMods()).collect(Collectors.joining(",")), score.getTimestamp());
 		}
