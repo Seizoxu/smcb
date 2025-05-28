@@ -3,6 +3,7 @@ package listeners;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLTimeoutException;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -65,11 +66,16 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 				
 				BotConfig.mowcDb.getUserDao().insertUser(user.getUserId(), user.getUsername(), user.getCountryCode(), user.isVerified());
 			}
-			//TODO: Check if map < end_date.
-			//TODO: make sure score only updates if score is higher.
 
-			BotConfig.mowcDb.getScoreDao().insertOrUpdateScore(score.getScoreId(), score.getUserId(), score.getMapId(),
-					score.getScore(), Arrays.stream(score.getMods()).collect(Collectors.joining(",")), score.getTimestamp());
+			boolean isMapValid = BotConfig.mowcDb.getMapDao().isMapInSubmissionWindow(score.getMapId(),Timestamp.from(score.getTimestamp())).isPresent();
+			if (!isMapValid)
+			{
+				sendFailed(event, String.format("Error: Submitted score with map ID %d is not in the submission window.", score.getScoreId()));
+				return;
+			}
+			
+			BotConfig.mowcDb.getScoreDao().callInsertOrUpdateScoreIfHigher(score.getScoreId(), score.getUserId(), score.getMapId(),
+					score.getScore(), String.join(",", score.getMods()), Timestamp.from(score.getTimestamp()));
 		}
 		catch (UnableToExecuteStatementException e)
 		{

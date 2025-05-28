@@ -1,6 +1,8 @@
 package wrappers;
 
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -57,4 +59,11 @@ public interface DbMapDao
 	
 	@SqlQuery("SELECT * FROM maps WHERE end_date = :sql_date")
 	List<OsuMap> getMapsOfEndDate(@Bind("sql_date") String sqlDate);
+	
+	@SqlQuery("""
+			SELECT 1 FROM maps
+			WHERE map_id = :map_id
+				AND :score_date BETWEEN DATE_SUB(end_date, INTERVAL 7 DAY) AND end_date
+			""")
+	Optional<Integer> isMapInSubmissionWindow(@Bind("map_id") int mapId, @Bind("score_date") Timestamp scoreDate);
 }

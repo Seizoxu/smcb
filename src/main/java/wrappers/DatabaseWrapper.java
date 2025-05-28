@@ -55,7 +55,7 @@ public class DatabaseWrapper
 					CREATE TABLE IF NOT EXISTS maps (
 						map_id INT PRIMARY KEY,
 						mapset_id INT NOT NULL,
-						week_of_year INT NOT NULL,
+						end_date DATE NOT NULL,
 						title VARCHAR(512),
 						artist VARCHAR(255),
 						mapper VARCHAR(255),
@@ -72,15 +72,15 @@ public class DatabaseWrapper
 					""");
 			handle.execute("""
 					CREATE TABLE IF NOT EXISTS scores (
-						score_id BIGINT PRIMARY KEY,
+						score_id BIGINT,
 						user_id BIGINT,
 						map_id INT,
 						score INT,
-						mods TEXT,
-						timestamp TIMESTAMP,
+						mods VARCHAR(255),
+						score_time DATETIME,
 						FOREIGN KEY (user_id) REFERENCES users(user_id),
 						FOREIGN KEY (map_id) REFERENCES maps(map_id),
-						UNIQUE (user_id, map_id)
+						PRIMARY KEY (user_id, map_id)
 					)
 					""");
 		});

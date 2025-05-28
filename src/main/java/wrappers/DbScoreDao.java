@@ -1,9 +1,10 @@
 package wrappers;
 
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.statement.SqlCall;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
@@ -11,21 +12,14 @@ import dataStructures.OsuScoreWithUser;
 
 public interface DbScoreDao
 {
-	@SqlUpdate("""
-			INSERT INTO scores (score_id, user_id, map_id, score, mods, timestamp)
-			VALUES (:score_id, :user_id, :map_id, :score, :mods, :timestamp)
-			ON DUPLICATE KEY UPDATE
-				score = IF(VALUES(score) > score, VALUES(score), score),
-				mods = IF(VALUES(score) > score, VALUES(mods), mods),
-				timestamp = IF(VALUES(score) > score, VALUES(timestamp), timestamp)
-			""")
-	void insertOrUpdateScore(
+	@SqlCall("CALL insert_or_update_score_if_higher(:score_id, :user_id, :map_id, :score, :mods, :score_time)")
+	void callInsertOrUpdateScoreIfHigher(
 			@Bind("score_id") long scoreId,
 			@Bind("user_id") long userId,
 			@Bind("map_id") int mapId,
 			@Bind("score") int score,
 			@Bind("mods") String mods,
-			@Bind("timestamp") Instant timestamp);
+			@Bind("score_time") Timestamp scoreTime);
 	
 	@SqlUpdate("DELETE FROM scores WHERE user_id = :user_id AND map_id = :map_id")
 	void deleteScoreByUserAndMap(@Bind("user_id") long userId, @Bind("map_id") int mapId);
@@ -36,7 +30,7 @@ public interface DbScoreDao
 	@SqlQuery("""
 			SELECT s.*, u.username FROM scores s
 			JOIN users on u on s.user_id = u.user_id
-			ORDER BY timestamp DESC
+			ORDER BY `score_time` DESC
 			""")
 	List<OsuScoreWithUser> getAllScoresSortedByTime();
 	
