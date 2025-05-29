@@ -6,6 +6,7 @@ import listeners.Ping;
 import listeners.RemoveMapsListener;
 import listeners.RemoveScoreListener;
 import listeners.SubmitScoreWeeklyListener;
+import listeners.VerifyToggleListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -25,7 +26,8 @@ public class Main
 						new RemoveMapsListener(),
 						new ListMapsListener(),
 						new RemoveScoreListener(),
-						new ListVerifiedUsersListener())
+						new ListVerifiedUsersListener(),
+						new VerifyToggleListener())
 				.enableIntents(GatewayIntent.MESSAGE_CONTENT)
 				.build();
 		

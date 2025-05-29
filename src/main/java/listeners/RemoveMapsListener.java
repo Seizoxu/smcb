@@ -31,6 +31,7 @@ public class RemoveMapsListener extends ListenerAdapter
 					.setDescription("Insufficient privileges... lowly peasant.")
 					.build())
 			.queue();
+			return;
 		}
 		event.deferReply().queue();
 		
