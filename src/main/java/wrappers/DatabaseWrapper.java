@@ -5,6 +5,7 @@ import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import dataStructures.OsuMap;
+import dataStructures.OsuPlayer;
 
 public class DatabaseWrapper
 {
@@ -23,6 +24,7 @@ public class DatabaseWrapper
 		this.mapDao = jdbi.onDemand(DbMapDao.class);
 		
 		jdbi.registerRowMapper(ConstructorMapper.factory(OsuMap.class));
+		jdbi.registerRowMapper(ConstructorMapper.factory(OsuPlayer.class));
 	}
 	
 	public DbUserDao getUserDao()

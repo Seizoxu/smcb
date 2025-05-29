@@ -24,6 +24,13 @@ public class RemoveScoreListener extends ListenerAdapter
 		{
 			return;
 		}
+		if (event.getUser().getIdLong() != BotConfig.ADMIN_DISCORD_ID)
+		{
+			event.getHook().sendMessageEmbeds(new EmbedBuilder()
+					.setDescription("Insufficient privileges... lowly peasant.")
+					.build())
+			.queue();
+		}
 		event.deferReply().queue();
 		
 		String link = event.getOption("link").getAsString();

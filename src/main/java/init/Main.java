@@ -1,6 +1,7 @@
 package init;
 import listeners.AddMapsListener;
 import listeners.ListMapsListener;
+import listeners.ListVerifiedUsersListener;
 import listeners.Ping;
 import listeners.RemoveMapsListener;
 import listeners.RemoveScoreListener;
@@ -23,7 +24,8 @@ public class Main
 						new AddMapsListener(),
 						new RemoveMapsListener(),
 						new ListMapsListener(),
-						new RemoveScoreListener())
+						new RemoveScoreListener(),
+						new ListVerifiedUsersListener())
 				.enableIntents(GatewayIntent.MESSAGE_CONTENT)
 				.build();
 		

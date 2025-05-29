@@ -22,7 +22,7 @@ public interface DbUserDao
 	@SqlQuery("SELECT EXISTS (SELECT 1 FROM users WHERE user_id = :user_id)")
 	boolean userExists(@Bind("user_id") long userId);
 	
-	@SqlQuery("SELECT user_id, username FROM users WHERE verified = 0;")
+	@SqlQuery("SELECT * FROM users WHERE verified = 0;")
 	List<OsuPlayer> getUnverifiedUsers();
 	
 	@SqlUpdate("UPDATE users SET verified = TRUE WHERE user_id = :user_id")

@@ -23,9 +23,16 @@ public class AddMapsListener extends ListenerAdapter
 	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent event)
 	{
-		if (!event.getName().equals("add-map") || event.getUser().getIdLong() != BotConfig.ADMIN_DISCORD_ID)
+		if (!event.getName().equals("add-map"))
 		{
 			return;
+		}
+		if (event.getUser().getIdLong() != BotConfig.ADMIN_DISCORD_ID)
+		{
+			event.getHook().sendMessageEmbeds(new EmbedBuilder()
+					.setDescription("Insufficient privileges... lowly peasant.")
+					.build())
+			.queue();
 		}
 		event.deferReply().queue();
 		
