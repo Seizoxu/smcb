@@ -30,3 +30,6 @@ bin/
 
 # Credentials
 src/main/resources/
+
+# Python environment
+py-env/
