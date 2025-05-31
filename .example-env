@@ -1,9 +1,3 @@
-# Host can be an IP, link, tailscale alias, etc.
-MYSQL_HOST: 127.0.0.1
-
-# MySQL's default port is 3306.
-MYSQL_PORT: 3306
-
 # Whatever you've named your database on your MySQL server.
 MYSQL_DATABASE: database_name
 
@@ -11,4 +5,7 @@ MYSQL_DATABASE: database_name
 MYSQL_USER: username
 
 # The password corresponding to the above username.
-MYSQL_PASSWORD: password
+MYSQL_PASSWORD: changeme
+
+# The password of the root setup user of your MySQL instance.
+MYSQL_ROOT_PASSWORD: changeme

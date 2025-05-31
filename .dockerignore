@@ -1,0 +1,14 @@
+# Git
+.git/
+
+# Environment Variables (only top level)
+/.env
+
+# Python environment
+py-env/
+
+# Log files
+*.log
+
+# Node modules.
+node_modules/

@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      #MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./frontend-data-broker/db:/docker-entrypoint-initdb.d # Runs on initialisation only.
+    ports:
+      - "${MYSQL_PORT:-3306}:3306" # fallback to 3306 if MYSQL_PORT is unset.
+
+  flask-api:
+    build: ./frontend-data-broker
+    container_name: frontend
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: mysql-db
+      DB_PORT: 3306
+      DB_DATABASE: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+
+  backend:
+    build: ./mouseonly-weekly-challenge
+    container_name: backend
+    depends_on:
+      - db
+    restart: always
+
+
+volumes:
+  mysql-data:

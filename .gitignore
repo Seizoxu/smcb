@@ -33,3 +33,6 @@ src/main/resources/
 
 # Python environment
 py-env/
+
+# MySQL data backup
+02_data.sql

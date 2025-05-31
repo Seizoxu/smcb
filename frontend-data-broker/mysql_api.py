@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify
 import mysql.connector
 
@@ -17,10 +18,10 @@ def get_scores():
 
 def query(sql):
     conn = mysql.connector.connect(
-        host='127.0.0.1',
-        user='smcb',
-        password='',
-        database='mowc'
+        host=os.getenv('DB_HOST', 'mysql-db'),
+        user=os.getenv('DB_USER', 'smcb'),
+        password=os.getenv('DB_PASSWORD', ''),
+        database=os.getenv('DB_NAME', 'mowc')
     )
     cursor = conn.cursor()
     cursor.execute(sql)
@@ -29,3 +30,5 @@ def query(sql):
     conn.close()
     return jsonify(rows)
 
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
