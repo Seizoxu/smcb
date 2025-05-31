@@ -1,0 +1,26 @@
+# The client ID of your application in osu!'s "new" OAuth Application System.
+OSU_CLIENT_ID="12345"
+
+# The client secret corresponding to the above client ID.
+OSU_CLIENT_SECRET="long-alphanumerical-string"
+
+# The API key of osu!'s legacy APIv1.
+OSU_LEGACY_TOKEN="another-long-alphanumerical-string"
+
+# Your Discord Bot Token.
+BOT_TOKEN="yet-another-long-string"
+
+# Your MySQL database hostname and port, delimited by a colon (:).
+DB_IP="host:port"
+
+# Your MySQL database user, with which you have authenticated at least view access.
+DB_USER="db-username"
+
+# Your MySQL database password corresponding to the above user.
+DB_PASSWORD="db-password"
+
+# The ID of your specific spreadsheet in which you want to output DB data.
+GSHEETS_ID="look-another-long-string"
+
+# Your Discord ID (not your tag).
+ADMIN_DISCORD_ID="numerical-id"

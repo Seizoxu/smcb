@@ -1,0 +1,14 @@
+# Host can be an IP, link, tailscale alias, etc.
+MYSQL_HOST: 127.0.0.1
+
+# MySQL's default port is 3306.
+MYSQL_PORT: 3306
+
+# Whatever you've named your database on your MySQL server.
+MYSQL_DATABASE: database_name
+
+# The username with which you have authenticated at least view access.
+MYSQL_USER: username
+
+# The password corresponding to the above username.
+MYSQL_PASSWORD: password
