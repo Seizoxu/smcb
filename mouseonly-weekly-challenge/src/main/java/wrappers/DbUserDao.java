@@ -30,4 +30,7 @@ public interface DbUserDao
 	
 	@SqlUpdate("UPDATE users SET verified = FALSE WHERE user_id = :user_id")
 	void unverifyUser(@Bind("user_id") long userId);
+	
+	@SqlQuery("SELECT * FROM users WHERE user_id = :user_id")
+	OsuPlayer getUsername(@Bind("user_id") long userId);
 }

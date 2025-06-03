@@ -4,9 +4,11 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLTimeoutException;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,9 +19,11 @@ import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import dataStructures.OsuMap;
 import dataStructures.OsuPlayer;
 import dataStructures.OsuScore;
 import init.BotConfig;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -52,6 +56,8 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 		OsuScore score = scoreResponse.get();
 
 		// Send score to MOWC DB.
+		OsuPlayer user = null;
+		OsuMap map = null;
 		try
 		{
 			boolean userExists = BotConfig.mowcDb.getUserDao().userExists(score.getUserId());
@@ -62,10 +68,12 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 				{
 					return;
 				}
-				OsuPlayer user = userResponse.get();
+				user = userResponse.get();
 				
 				BotConfig.mowcDb.getUserDao().insertUser(user.getUserId(), user.getUsername(), user.getCountryCode(), user.isVerified());
 			}
+			
+			user = BotConfig.mowcDb.getUserDao().getUsername(score.getUserId());
 
 			boolean isMapValid = BotConfig.mowcDb.getMapDao().isMapInSubmissionWindow(score.getMapId(),Timestamp.from(score.getTimestamp())).isPresent();
 			if (!isMapValid)
@@ -73,6 +81,8 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 				sendFailed(event, String.format("Error: Submitted score with map ID %d is not in the submission window.", score.getScoreId()));
 				return;
 			}
+			
+			map = BotConfig.mowcDb.getMapDao().getMap(score.getMapId());
 			
 			BotConfig.mowcDb.getScoreDao().callInsertOrUpdateScoreIfHigher(score.getScoreId(), score.getUserId(), score.getMapId(),
 					score.getScore(), String.join(",", score.getMods()), Timestamp.from(score.getTimestamp()));
@@ -110,18 +120,22 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 		}
 		
 		// Send score submission success
-		event.getHook().sendMessageFormat(
-				"Score submitted!%n"
-				+ "Beatmap ID: %d%n"
-				+ "User ID: %d%n"
-				+ "Total Score: %d%n"
-				+ "Mods: %s%n"
-				+ "Timestamp: %s%n",
-				score.getMapId(),
-				score.getUserId(),
-				score.getScore(),
-				Arrays.stream(score.getMods()).collect(Collectors.joining(",")),
-				score.getTimestamp())
+		NumberFormat nf = NumberFormat.getInstance(Locale.US);
+		event.getHook().sendMessageEmbeds(new EmbedBuilder()
+				.setTitle("Score Submitted!")
+				.setDescription(String.format(
+						  "`Beatmap    :` %d | %s [%s]%n"
+						+ "`User ID    :` %d (%s)%n"
+						+ "`Total Score:` %s%n"
+						+ "`Mods       :` %s%n"
+						+ "`Timestamp  :` %s%n",
+						map.getMapId(), map.getTitle(), map.getDifficultyName(),
+						score.getUserId(), user.getUsername(),
+						nf.format(score.getScore()),
+						Arrays.stream(score.getMods()).collect(Collectors.joining(",")),
+						score.getTimestamp())
+						)
+				.build())
 		.queue();
 		//TODO: make command to show list of unverified users, and change their verified status
 		//TODO: retrieve scores from db and send to gsheets
