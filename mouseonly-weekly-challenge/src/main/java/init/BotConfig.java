@@ -24,6 +24,9 @@ public class BotConfig
 	public static final String DB_PASSWORD = getVar("DB_PASSWORD");
 	public static final String GSHEETS_ID = getVar("GSHEETS_ID");
 	public static final long ADMIN_DISCORD_ID = Long.parseLong(getVar("ADMIN_DISCORD_ID"));
+	
+	private static final int DB_CONNECTION_RETRIES = 10;
+	private static final int DB_CONNECTION_RETRY_DELAY_MS = 3000;
 
 	public static void initialise()
 	{
@@ -31,8 +34,32 @@ public class BotConfig
 		{
 			osuApi = new OsuWrapper(OSU_CLIENT_ID, OSU_CLIENT_SECRET, OSU_LEGACY_TOKEN);
 			
-			mowcDb = new DatabaseWrapper(String.format("jdbc:mysql://%s/mowc", DB_IP), DB_USER, DB_PASSWORD);
-			mowcDb.createTables();
+			for (int i=0; i<DB_CONNECTION_RETRIES; i++)
+			{
+				try
+				{
+					mowcDb = new DatabaseWrapper(String.format("jdbc:mysql://%s/mowc", DB_IP), DB_USER, DB_PASSWORD);
+					mowcDb.createTables();
+					System.out.println("[INIT] Database connected successfully.");
+					break;
+				}
+				catch (Exception e)
+				{
+					System.err.println("[ERROR] Failed to connect to DB, attempt " + (i + 1));
+					
+					if (i == DB_CONNECTION_RETRIES-1)
+					{
+						e.printStackTrace();
+						throw new RuntimeException("[ERROR] Failed to connect to DB after " + (i+1) + " attempts.");
+					}
+					
+					try
+					{
+						Thread.sleep(DB_CONNECTION_RETRY_DELAY_MS);
+					}
+					catch (InterruptedException ie) {}
+				}
+			}
 		}
 		catch (Exception e)
 		{

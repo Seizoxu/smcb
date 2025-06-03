@@ -39,7 +39,7 @@ dependencies {
 }
 
 group = 'com.seizoxu'
-version = '0.3.0'
+version = '1.0.0'
 description = 'Seizoxu\'s Mouse-Only Weekly Challenge'
 java.sourceCompatibility = JavaVersion.VERSION_17
 
