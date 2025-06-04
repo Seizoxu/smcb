@@ -36,7 +36,9 @@ public class InitialiseSlashCommands
 				.addOption(OptionType.INTEGER, "user-id", "ID of the user to verify", true),
 
 				Commands.slash("unverify-user", "[Admin CMD] Unverifies a user, so their scores may not be counted.")
-				.addOption(OptionType.INTEGER, "user-id", "ID of the user to unverify.", true)
+				.addOption(OptionType.INTEGER, "user-id", "ID of the user to unverify.", true),
+
+				Commands.slash("update-commands", "[Admin CMD] Updates slash commands.")
 				).queue();
 	}
 }
