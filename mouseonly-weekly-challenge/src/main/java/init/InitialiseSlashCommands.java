@@ -12,8 +12,13 @@ public class InitialiseSlashCommands
 				Commands.slash("submit-score-weekly", "Submits an osu! score to the Mouse-Only Weekly Challenge Sheet.")
 				.addOption(OptionType.STRING, "link", "An osu! score link.", true),
 
+				Commands.slash("submit-recent-score", "Submits your most recent osu! score to the Mouse-Only Weekly Challenge Sheet."),
+
 				Commands.slash("remove-score", "[Admin CMD] Removes a score.")
 				.addOption(OptionType.STRING, "link", "An osu! score link/id.", true),
+
+				Commands.slash("osuset", "Links your osu! profile to SMCB.")
+				.addOption(OptionType.STRING, "username", "Your osu! username.", true),
 
 				Commands.slash("add-map", "[Admin CMD] Submits an osu! beatmap to the Mouse-Only Weekly Challenge Database.")
 				.addOption(OptionType.STRING, "link", "An osu! beatmap link/id. Must be a beatmap, and not beatmapSET.", true)

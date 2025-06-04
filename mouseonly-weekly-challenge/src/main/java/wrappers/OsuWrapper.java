@@ -265,7 +265,7 @@ public class OsuWrapper
 	 * @param scoreType: can be "best" "firsts" or "recent"
 	 * @return Optional<JsonArray> - List of osu! API v2 "Score" Structure.
 	 */
-	public Optional<JsonArray> getTopPlaysByUserId(int userId, String scoreType, int limit)
+	public Optional<JsonArray> getTopPlaysByUserId(long userId, String scoreType, int limit)
 	{
 		try
 		{

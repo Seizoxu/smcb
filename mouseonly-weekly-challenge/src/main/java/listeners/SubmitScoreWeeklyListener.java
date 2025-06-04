@@ -70,7 +70,7 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 				}
 				user = userResponse.get();
 				
-				BotConfig.mowcDb.getUserDao().insertUser(user.getUserId(), user.getUsername(), user.getCountryCode(), user.isVerified());
+				BotConfig.mowcDb.getUserDao().insertUser(user.getUserId(), user.getUsername(), user.getCountryCode(), user.isVerified(), user.getDiscordId());
 			}
 			
 			user = BotConfig.mowcDb.getUserDao().getUsername(score.getUserId());
@@ -93,7 +93,7 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 
 			if (cause instanceof SQLIntegrityConstraintViolationException)
 			{
-				sendFailed(event, String.format("Error: Submitted score with map ID %d is not in the weekly map list.", score.getScoreId()));
+				sendFailed(event, String.format("Error: Submitted score with score ID %d is not in the weekly map list.", score.getScoreId()));
 				return;
 			}
 			else if (cause instanceof SQLSyntaxErrorException)
@@ -137,8 +137,6 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 						)
 				.build())
 		.queue();
-		//TODO: make command to show list of unverified users, and change their verified status
-		//TODO: retrieve scores from db and send to gsheets
 	}
 	
 
@@ -224,7 +222,7 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 		String username = playerData.get("username").getAsString();
 		String countryCode = playerData.get("country").getAsJsonObject().get("code").getAsString();
 		
-		return Optional.of(new OsuPlayer(userId, username, countryCode, false));
+		return Optional.of(new OsuPlayer(userId, username, countryCode, false, -1));
 	}
 	
 

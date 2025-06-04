@@ -8,14 +8,16 @@ public class OsuPlayer
 	private String username;
 	private String countryCode;
 	private boolean isVerified;
+	private long discordId;
 	
-	@ConstructorProperties({"user_id", "username", "country_code", "verified"})
-	public OsuPlayer(long userId, String username, String countryCode, boolean isVerified)
+	@ConstructorProperties({"user_id", "username", "country_code", "verified", "discord_id"})
+	public OsuPlayer(long userId, String username, String countryCode, boolean isVerified, long discordId)
 	{
 		this.userId = userId;
 		this.username = username;
 		this.countryCode = countryCode;
 		this.isVerified = isVerified;
+		this.discordId = discordId;
 	}
 
 	public long getUserId() {return userId;}
@@ -29,4 +31,7 @@ public class OsuPlayer
 	
 	public boolean isVerified() {return isVerified;}
 	public void setVerified(boolean isVerified) {this.isVerified = isVerified;}
+
+	public long getDiscordId() {return discordId;}
+	public void setDiscordId(long discordId) {this.discordId = discordId;}
 }

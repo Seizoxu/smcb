@@ -11,13 +11,19 @@ import dataStructures.OsuPlayer;
 public interface DbUserDao
 {
 	@SqlUpdate("""
-			INSERT INTO users (user_id, username, country_code, verified)
-			VALUES (:user_id, :username, :country_code, :verified)
+			INSERT INTO users (user_id, username, country_code, verified, discord_id)
+			VALUES (:user_id, :username, :country_code, :verified, :disord_id)
 			ON DUPLICATE KEY UPDATE
 				username = VALUES(username),
-				country_code = VALUES(country_code)
+				country_code = VALUES(country_code),
+				discord_id = VALUES(discord_id)
 			""")
-	void insertUser(@Bind("user_id") long userId, @Bind("username") String username, @Bind("country_code") String countryCode, @Bind("verified") boolean isVerified);
+	void insertUser(
+			@Bind("user_id") long userId,
+			@Bind("username") String username,
+			@Bind("country_code") String countryCode,
+			@Bind("verified") boolean isVerified,
+			@Bind("discord_id") long discordId);
 	
 	@SqlQuery("SELECT EXISTS (SELECT 1 FROM users WHERE user_id = :user_id)")
 	boolean userExists(@Bind("user_id") long userId);
@@ -33,4 +39,7 @@ public interface DbUserDao
 	
 	@SqlQuery("SELECT * FROM users WHERE user_id = :user_id")
 	OsuPlayer getUsername(@Bind("user_id") long userId);
+
+	@SqlQuery("SELECT * FROM users WHERE discord_id = :discord_id")
+	OsuPlayer getUserFromDiscordId(@Bind("user_id") long discordId);
 }
