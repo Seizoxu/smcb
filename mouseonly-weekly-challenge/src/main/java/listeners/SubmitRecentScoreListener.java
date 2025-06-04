@@ -37,7 +37,6 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent event)
 	{
-		
 		if (!event.getName().equals("submit-recent-score"))
 		{
 			return;

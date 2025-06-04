@@ -131,7 +131,7 @@ public class OsuWrapper
 	/* --------------------------------------------------------------------------------------------------
 	 * --------------------------------------------------------------------------------------------------
 	 * -------------------------------------------------------------------------------------------------- */
-	
+
 
 	/**
 	 * Returns a user, given its user ID
@@ -152,6 +152,26 @@ public class OsuWrapper
 		catch (IOException | InterruptedException e) {return Optional.empty();}
 	}
 	
+
+	/**
+	 * Returns a user, given its username.
+	 * @param username
+	 * @return Optional<JsonObject> = osu! API v2 "UserExtended" Structure.
+	 */
+	public Optional<JsonObject> getUserByName(String username)
+	{
+		try
+		{
+			String jsonStr = requestData(String.format(
+					"users/@%s/osu",
+					username));
+
+			return Optional.of(JsonParser.parseString(jsonStr).getAsJsonObject());
+		}
+		catch (JsonParseException e) {return Optional.empty();}
+		catch (IOException | InterruptedException e) {return Optional.empty();}
+	}
+
 
 	/**
 	 * STD PP rankings.

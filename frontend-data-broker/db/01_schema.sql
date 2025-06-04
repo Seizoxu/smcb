@@ -1,3 +1,4 @@
+Enter password: 
 -- MySQL dump 10.13  Distrib 8.0.42, for Linux (x86_64)
 --
 -- Host: localhost    Database: mowc
@@ -75,6 +76,7 @@ CREATE TABLE `users` (
   `username` varchar(255) NOT NULL,
   `country_code` char(2) DEFAULT NULL,
   `verified` tinyint(1) NOT NULL DEFAULT '0',
+  `discord_id` bigint NOT NULL DEFAULT '-1',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -120,7 +122,6 @@ BEGIN
     END IF;
 END ;;
 DELIMITER ;
-
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -135,4 +136,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-03  4:34:06
+-- Dump completed on 2025-06-04  5:38:32

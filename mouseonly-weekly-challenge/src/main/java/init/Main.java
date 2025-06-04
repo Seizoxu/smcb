@@ -2,10 +2,13 @@ package init;
 import listeners.AddMapsListener;
 import listeners.ListMapsListener;
 import listeners.ListVerifiedUsersListener;
+import listeners.OsuVerifyListener;
 import listeners.Ping;
 import listeners.RemoveMapsListener;
 import listeners.RemoveScoreListener;
+import listeners.SubmitRecentScoreListener;
 import listeners.SubmitScoreWeeklyListener;
+import listeners.UpdateCommandsListener;
 import listeners.VerifyToggleListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -27,7 +30,11 @@ public class Main
 						new ListMapsListener(),
 						new RemoveScoreListener(),
 						new ListVerifiedUsersListener(),
-						new VerifyToggleListener())
+						new VerifyToggleListener(),
+						new SubmitRecentScoreListener(),
+						new UpdateCommandsListener(),
+						new OsuVerifyListener()
+						)
 				.enableIntents(GatewayIntent.MESSAGE_CONTENT)
 				.build();
 		

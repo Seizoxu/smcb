@@ -15,7 +15,7 @@ public class BotConfig
 			.ignoreIfMissing()
 			.load();
 	
-	private static final String OSU_CLIENT_ID = getVar("OSU_CLIENT_ID");
+	public static final String OSU_CLIENT_ID = getVar("OSU_CLIENT_ID");
 	private static final String OSU_CLIENT_SECRET = getVar("OSU_CLIENT_SECRET");
 	private static final String OSU_LEGACY_TOKEN = getVar("OSU_LEGACY_TOKEN");
 	protected static final String BOT_TOKEN = getVar("BOT_TOKEN");
