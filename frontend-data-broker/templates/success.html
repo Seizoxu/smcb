@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>osu! Verification Successful</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #ca618c, #942754);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background-color: #8084b0;
+            border-radius: 16px;
+            padding: 2rem 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        a.button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: #ca618c;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        a.button:hover {
+            background-color: #942754;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>You're Verified!</h1>
+        <p>Your osu! account has been successfully linked.</p>
+        <a href="{{ discord_return_url }}" class="button">Return to {{ discord_return_name }}</a>
+    </div>
+</body>
+</html>
+
