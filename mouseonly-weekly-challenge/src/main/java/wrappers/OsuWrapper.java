@@ -76,9 +76,8 @@ public class OsuWrapper
 		try
 		{
 			// 1800 seconds = 30 minutes
-			if (System.currentTimeMillis()/1000 + 1800 > tokenExpiryEpoch) {return token;}
-			
-			updateOsuAuthentication();
+			if (System.currentTimeMillis()/1000 + 1800 > tokenExpiryEpoch) {updateOsuAuthentication();}
+
 			return token;
 		}
 		catch (IOException | InterruptedException e)
