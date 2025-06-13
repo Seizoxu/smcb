@@ -29,8 +29,8 @@ public class OsuVerifyListener extends ListenerAdapter
 			event.getHook().sendMessageEmbeds(new EmbedBuilder()
 					.setTitle("Authentication Link")
 					.setDescription(String.format(
-							"[Click me.](<https://osu.ppy.sh/oauth/authorize?client_id=%s&response_type=code&scope=%s&state=%d>)",
-							BotConfig.OSU_CLIENT_ID, "identify", discordId))
+							"[Click me.](<https://osu.ppy.sh/oauth/authorize?client_id=%s&response_type=code&scope=%s&redirect_uri=%s&state=%d>)",
+							BotConfig.OSU_CLIENT_ID, "identify", BotConfig.OSU_REDIRECT_URI,discordId))
 					.build())
 			.queue();
 		}

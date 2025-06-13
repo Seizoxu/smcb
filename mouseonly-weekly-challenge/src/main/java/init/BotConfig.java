@@ -18,6 +18,7 @@ public class BotConfig
 	public static final String OSU_CLIENT_ID = getVar("OSU_CLIENT_ID");
 	private static final String OSU_CLIENT_SECRET = getVar("OSU_CLIENT_SECRET");
 	private static final String OSU_LEGACY_TOKEN = getVar("OSU_LEGACY_TOKEN");
+	public static final String OSU_REDIRECT_URI = getVar("OSU_REDIRECT_URI");
 	protected static final String BOT_TOKEN = getVar("BOT_TOKEN");
 	public static final String DB_IP = getVar("DB_IP");
 	public static final String DB_USER = getVar("DB_USER");
