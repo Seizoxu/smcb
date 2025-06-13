@@ -12,7 +12,7 @@ public class OsuScore
 	private String[] mods;
 	private Instant timestamp;
 
-	@ConstructorProperties({"score_id", "user_id", "map_id", "mods", "timestamp"})
+	@ConstructorProperties({"score_id", "user_id", "map_id", "score", "mods", "score_time"})
 	public OsuScore(long scoreId, long userId, int mapId, int score, String[] mods, Instant timestamp)
 	{
 		this.scoreId = scoreId;

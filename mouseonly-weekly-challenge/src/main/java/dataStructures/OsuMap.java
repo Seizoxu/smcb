@@ -11,6 +11,7 @@ public class OsuMap
 	private String artist;
 	private String mapper;
 	private String difficultyName;
+	private String bannerLink;
 	private double starRating;
 	private double ar;
 	private double od;
@@ -18,11 +19,10 @@ public class OsuMap
 	private double cs;
 	private int lengthSeconds;
 	private int bpm;
-	private String bannerLink;
 
-	@ConstructorProperties({"map_id", "mapset_id", "end_date", "title", "artist", "mapper", "difficulty_name", "star_rating", "ar", "od", "hp", "cs", "length_seconds", "bpm", "banner_link"})
+	@ConstructorProperties({"map_id", "mapset_id", "end_date", "title", "artist", "mapper", "difficulty_name", "banner_link", "star_rating", "ar", "od", "hp", "cs", "length_seconds", "bpm"})
 	public OsuMap(int mapId, int mapsetId, String endDate, String title, String artist, String mapper, String difficultyName,
-			double starRating, double ar, double od, double hp, double cs, int lengthSeconds, int bpm, String bannerLink)
+			String bannerLink, double starRating, double ar, double od, double hp, double cs, int lengthSeconds, int bpm)
 	{
 		this.mapId = mapId;
 		this.mapsetId = mapsetId;
@@ -31,6 +31,7 @@ public class OsuMap
 		this.artist = artist;
 		this.mapper = mapper;
 		this.difficultyName = difficultyName;
+		this.bannerLink = bannerLink;
 		this.starRating = starRating;
 		this.ar = ar;
 		this.od = od;
@@ -38,7 +39,6 @@ public class OsuMap
 		this.cs = cs;
 		this.lengthSeconds = lengthSeconds;
 		this.bpm = bpm;
-		this.bannerLink = bannerLink;
 	}
 
 	public int getMapId() {return mapId;}
@@ -62,6 +62,9 @@ public class OsuMap
 	public String getDifficultyName() {return difficultyName;}
 	public void setDifficultyName(String difficultyName) {this.difficultyName = difficultyName;}
 
+	public String getBannerLink() {return bannerLink;}
+	public void setBannerLink(String bannerLink) {this.bannerLink = bannerLink;}
+
 	public double getStarRating() {return starRating;}
 	public void setStarRating(double starRating) {this.starRating = starRating;}
 
@@ -82,7 +85,4 @@ public class OsuMap
 
 	public int getBpm() {return bpm;}
 	public void setBpm(int bpm) {this.bpm = bpm;}
-
-	public String getBannerLink() {return bannerLink;}
-	public void setBannerLink(String bannerLink) {this.bannerLink = bannerLink;}
 }

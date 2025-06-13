@@ -13,8 +13,8 @@ import dataStructures.OsuMap;
 public interface DbMapDao
 {
 	@SqlUpdate("""
-			INSERT INTO maps (map_id, mapset_id, end_date, title, artist, mapper, difficulty_name, star_rating, ar, od, hp, cs, length_seconds, bpm, banner_link)
-			VALUES (:map_id, :mapset_id, :end_date, :title, :artist, :mapper, :difficulty_name, :star_rating, :ar, :od, :hp, :cs, :length_seconds, :bpm, :banner_link)
+			INSERT INTO maps (map_id, mapset_id, end_date, title, artist, mapper, difficulty_name, banner_link, star_rating, ar, od, hp, cs, length_seconds, bpm)
+			VALUES (:map_id, :mapset_id, :end_date, :title, :artist, :mapper, :difficulty_name, :banner_link, :star_rating, :ar, :od, :hp, :cs, :length_seconds, :bpm)
 			ON DUPLICATE KEY UPDATE
 				mapset_id = VALUES(mapset_id),
 				end_date = VALUES(end_date),
@@ -22,14 +22,14 @@ public interface DbMapDao
 				artist = VALUES(artist),
 				mapper = VALUES(mapper),
 				difficulty_name = VALUES(difficulty_name),
+				banner_link = VALUES(banner_link),
 				star_rating = VALUES(star_rating),
 				ar = VALUES(ar),
 				od = VALUES(od),
 				hp = VALUES(hp),
 				cs = VALUES(cs),
 				length_seconds = VALUES(length_seconds),
-				bpm = VALUES(bpm),
-				banner_link = VALUES(banner_link)
+				bpm = VALUES(bpm)
 			""")
 	void insertMap(
 			@Bind("map_id") int mapId,
@@ -39,14 +39,14 @@ public interface DbMapDao
 			@Bind("artist") String artist,
 			@Bind("mapper") String mapper,
 			@Bind("difficulty_name") String difficultyName,
+			@Bind("banner_link") String bannerLink,
 			@Bind("star_rating") double starRating,
 			@Bind("ar") double ar,
 			@Bind("od") double od,
 			@Bind("hp") double hp,
 			@Bind("cs") double cs,
 			@Bind("length_seconds") int lengthSeconds,
-			@Bind("bpm") int bpm,
-			@Bind("banner_link") String bannerLink);
+			@Bind("bpm") int bpm);
 	
 	@SqlUpdate("DELETE FROM maps WHERE map_id = :map_id")
 	void removeMap(@Bind("map_id") int mapId);

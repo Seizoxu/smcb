@@ -157,7 +157,7 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 			sendFailed(event, "Unable to retrieve score data.");
 			return Optional.empty();
 		}
-		else if (recentScoreRequest.get().getAsJsonObject().has("error"))
+		else if (recentScoreRequest.get().getAsJsonArray().get(0).getAsJsonObject().has("error"))
 		{
 			sendFailed(event, String.format("Invalid score link: API error - `%s`", recentScoreRequest.get().getAsJsonObject().has("error")));
 			return Optional.empty();
@@ -165,11 +165,12 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 		JsonObject scoreData = recentScoreRequest.get().get(0).getAsJsonObject();
 		
 		// Retrieve beatmap ID and user ID.
+		long scoreId = scoreData.get("id").getAsLong();
+		long userId = scoreData.get("user_id").getAsLong();
 		int beatmapId = scoreData.getAsJsonObject("beatmap").get("id").getAsInt();
-		int userId = scoreData.get("user_id").getAsInt();
 		int totalScore = scoreData.get("total_score").getAsInt();
-		Instant timestamp = Instant.parse(scoreData.get("ended_at").getAsString());
 		List<JsonElement> modsData = scoreData.get("mods").getAsJsonArray().asList();
+		Instant timestamp = Instant.parse(scoreData.get("ended_at").getAsString());
 		
 		// Only allow stable mods.
 		List<String> modsList = modsData.stream()
@@ -190,7 +191,7 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 			totalScore = (int)Math.round((double)totalScore/0.96);
 		}
 		
-		return Optional.of(new OsuScore(player.getUserId(), userId, beatmapId, totalScore, modsList.toArray(new String[0]), timestamp));
+		return Optional.of(new OsuScore(scoreId, userId, beatmapId, totalScore, modsList.toArray(new String[0]), timestamp));
 	}
 	
 	
@@ -207,7 +208,8 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 			boolean isMapValid = BotConfig.mowcDb.getMapDao().isMapInSubmissionWindow(score.getMapId(),Timestamp.from(score.getTimestamp())).isPresent();
 			if (!isMapValid)
 			{
-				sendFailed(event, String.format("Error: Submitted score with score ID %d is not in the submission window.", score.getScoreId()));
+				sendFailed(event, String.format("Error: Submitted score with score ID [%d](<https://osu.ppy.sh/scores/%d>) is not in the submission window.",
+						score.getScoreId(), score.getScoreId()));
 				return Optional.empty();
 			}
 			

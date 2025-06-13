@@ -50,7 +50,8 @@ public class DatabaseWrapper
 						user_id BIGINT PRIMARY KEY,
 						name VARCHAR(255) NOT NULL,
 						country_code CHAR(2),
-						verified BOOLEAN NOT NULL DEFAULT FALSE
+						verified BOOLEAN NOT NULL DEFAULT FALSE,
+						discord_id BIGINT NOT NULL DEFAULT -1
 					)
 					""");
 			handle.execute("""

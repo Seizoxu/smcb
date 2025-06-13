@@ -50,8 +50,8 @@ public class AddMapsListener extends ListenerAdapter
 		try
 		{
 			BotConfig.mowcDb.getMapDao().insertMap(map.getMapId(), map.getMapsetId(), map.getEndDate(), map.getTitle(), map.getArtist(),
-					map.getMapper(), map.getDifficultyName(), map.getStarRating(), map.getAr(), map.getOd(), map.getHp(),
-					map.getCs(), map.getLengthSeconds(), map.getBpm(), map.getBannerLink());
+					map.getMapper(), map.getDifficultyName(), map.getBannerLink(), map.getStarRating(), map.getAr(), map.getOd(), map.getHp(),
+					map.getCs(), map.getLengthSeconds(), map.getBpm());
 		}
 		catch (UnableToExecuteStatementException e)
 		{
@@ -137,7 +137,7 @@ public class AddMapsListener extends ListenerAdapter
 		int bpm = map.get("bpm").getAsInt();
 		String bannerLink = map.get("beatmapset").getAsJsonObject().get("covers").getAsJsonObject().get("cover@2x").getAsString();
 		
-		return Optional.of(new OsuMap(mapId, mapsetId, endDate, title, artist, mapper, difficultyName, starRating, ar, od, hp, cs, lengthSeconds, bpm, bannerLink));
+		return Optional.of(new OsuMap(mapId, mapsetId, endDate, title, artist, mapper, difficultyName, bannerLink, starRating, ar, od, hp, cs, lengthSeconds, bpm));
 	}
 	
 	

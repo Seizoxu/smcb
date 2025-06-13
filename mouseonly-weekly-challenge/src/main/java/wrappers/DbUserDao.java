@@ -44,5 +44,5 @@ public interface DbUserDao
 	OsuPlayer getUsername(@Bind("user_id") long userId);
 
 	@SqlQuery("SELECT * FROM users WHERE discord_id = :discord_id")
-	OsuPlayer getUserFromDiscordId(@Bind("user_id") long discordId);
+	OsuPlayer getUserFromDiscordId(@Bind("discord_id") long discordId);
 }
