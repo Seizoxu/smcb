@@ -157,12 +157,17 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 			sendFailed(event, "Unable to retrieve score data.");
 			return Optional.empty();
 		}
+		else if (recentScoreRequest.get().getAsJsonArray().isEmpty())
+		{
+			sendFailed(event, String.format("Player [%s](<https://osu.ppy/sh/u/%d>) has no recent scores.", player.getUsername(), player.getUserId()));
+			return Optional.empty();
+		}
 		else if (recentScoreRequest.get().getAsJsonArray().get(0).getAsJsonObject().has("error"))
 		{
 			sendFailed(event, String.format("Invalid score link: API error - `%s`", recentScoreRequest.get().getAsJsonObject().has("error")));
 			return Optional.empty();
 		}
-		JsonObject scoreData = recentScoreRequest.get().get(0).getAsJsonObject();
+		JsonObject scoreData = recentScoreRequest.get().getAsJsonArray().get(0).getAsJsonObject();
 		
 		// Retrieve beatmap ID and user ID.
 		long scoreId = scoreData.get("id").getAsLong();
