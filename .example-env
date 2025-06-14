@@ -1,11 +1,9 @@
-# Whatever you've named your database on your MySQL server.
-MYSQL_DATABASE: database_name
-
-# The username with which you have authenticated at least view access.
-MYSQL_USER: username
-
-# The password corresponding to the above username.
-MYSQL_PASSWORD: changeme
-
-# The password of the root setup user of your MySQL instance.
-MYSQL_ROOT_PASSWORD: changeme
+MYSQL_DATABASE=challenge-db
+MYSQL_USER=bot
+MYSQL_PASSWORD=changeme
+MYSQL_ROOT_PASSWORD=changeme
+OSU_CLIENT_ID=12345
+OSU_CLIENT_SECRET=a-really-long-string
+REDIRECT_URI=http://localhost:5000/osu-callback
+DISCORD_RETURN_URL=https://discord.com/channels/<guild-id>/<channel-id>
+DISCORD_RETURN_NAME=#channel-name
