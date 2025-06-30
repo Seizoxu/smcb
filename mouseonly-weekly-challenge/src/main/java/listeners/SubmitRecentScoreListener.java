@@ -195,6 +195,13 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 		{
 			totalScore = (int)Math.round((double)totalScore/0.96);
 		}
+
+		// Add EZ multiplier
+		//TODO: make this configurable later.
+		if (modsList.contains("EZ"))
+		{
+			totalScore = (int)Math.round((double)totalScore*1.8);
+		}
 		
 		return Optional.of(new OsuScore(scoreId, userId, beatmapId, totalScore, modsList.toArray(new String[0]), timestamp));
 	}
