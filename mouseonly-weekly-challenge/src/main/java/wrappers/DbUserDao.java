@@ -12,7 +12,7 @@ public interface DbUserDao
 {
 	@SqlUpdate("""
 			INSERT INTO users (user_id, username, country_code, verified, discord_id)
-			VALUES (:user_id, :username, :country_code, :verified, :disord_id)
+			VALUES (:user_id, :username, :country_code, :verified, :discord_id)
 			ON DUPLICATE KEY UPDATE
 				username = VALUES(username),
 				country_code = VALUES(country_code),
