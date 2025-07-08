@@ -78,7 +78,8 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 			boolean isMapValid = BotConfig.mowcDb.getMapDao().isMapInSubmissionWindow(score.getMapId(),Timestamp.from(score.getTimestamp())).isPresent();
 			if (!isMapValid)
 			{
-				sendFailed(event, String.format("Error: Submitted score with map ID %d is not in the submission window.", score.getScoreId()));
+				sendFailed(event, String.format("Error: Submitted score with score ID [%d](<https://osu.ppy.sh/scores/%d>) is not in the submission window.",
+						score.getScoreId(), score.getScoreId()));
 				return;
 			}
 			

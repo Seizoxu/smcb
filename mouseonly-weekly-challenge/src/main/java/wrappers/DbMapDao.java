@@ -60,10 +60,11 @@ public interface DbMapDao
 	@SqlQuery("SELECT * FROM maps WHERE end_date = :sql_date")
 	List<OsuMap> getMapsOfEndDate(@Bind("sql_date") String sqlDate);
 	
+	// Interval 6 day, because BETWEEN is inclusive on both ends; this is a 7 day window.
 	@SqlQuery("""
 			SELECT 1 FROM maps
 			WHERE map_id = :map_id
-				AND :score_date BETWEEN DATE_SUB(end_date, INTERVAL 7 DAY) AND end_date
+				AND :score_date BETWEEN DATE_SUB(end_date, INTERVAL 6 DAY) AND end_date
 			""")
 	Optional<Integer> isMapInSubmissionWindow(@Bind("map_id") int mapId, @Bind("score_date") Timestamp scoreDate);
 }
