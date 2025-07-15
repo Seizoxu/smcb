@@ -64,7 +64,9 @@ public interface DbMapDao
 	@SqlQuery("""
 			SELECT 1 FROM maps
 			WHERE map_id = :map_id
-				AND :score_date BETWEEN DATE_SUB(end_date, INTERVAL 6 DAY) AND end_date
+				AND :score_date >= DATE_SUB(CAST(end_date AS DATETIME), INTERVAL 6 DAY)
+				AND :score_date < DATE_ADD(CAST(end_date AS DATETIME), INTERVAL 1 DAY)
+
 			""")
 	Optional<Integer> isMapInSubmissionWindow(@Bind("map_id") int mapId, @Bind("score_date") Timestamp scoreDate);
 }
