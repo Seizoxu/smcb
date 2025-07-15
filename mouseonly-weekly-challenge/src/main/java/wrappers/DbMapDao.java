@@ -52,7 +52,7 @@ public interface DbMapDao
 	void removeMap(@Bind("map_id") int mapId);
 	
 	@SqlQuery("SELECT * FROM maps WHERE map_id = :map_id")
-	OsuMap getMap(@Bind("map_id") int mapId);
+	Optional<OsuMap> getMap(@Bind("map_id") int mapId);
 
 	@SqlQuery("SELECT * FROM maps")
 	List<OsuMap> getAllMaps();

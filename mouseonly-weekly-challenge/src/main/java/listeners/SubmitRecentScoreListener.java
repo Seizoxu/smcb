@@ -217,6 +217,14 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 	{
 		try
 		{
+			Optional<OsuMap> mapRequest = BotConfig.mowcDb.getMapDao().getMap(score.getMapId());
+			if (mapRequest.isEmpty())
+			{
+				sendFailed(event, String.format(
+						"Error: Submitted score ID [%d](<https://osu.ppy.sh/scores/%d>) that refers to map ID [%d](<https://osu.ppy.sh/b/%d>) is not in the weekly map list",
+						score.getScoreId(), score.getScoreId(), score.getMapId(), score.getMapId()));
+			}
+
 			boolean isMapValid = BotConfig.mowcDb.getMapDao().isMapInSubmissionWindow(score.getMapId(),Timestamp.from(score.getTimestamp())).isPresent();
 			if (!isMapValid)
 			{
@@ -225,7 +233,7 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 				return Optional.empty();
 			}
 			
-			return Optional.of(BotConfig.mowcDb.getMapDao().getMap(score.getMapId()));
+			return mapRequest;
 		}
 		catch (UnableToExecuteStatementException e)
 		{
@@ -233,7 +241,9 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 
 			if (cause instanceof SQLIntegrityConstraintViolationException)
 			{
-				sendFailed(event, String.format("Error: Submitted score with map ID %d is not in the weekly map list.", score.getScoreId()));
+				sendFailed(event, String.format("SQL Error: Integrity constraint violation on submitted score for map ID [%d](<https://osu.ppy.sh/b/%d>).",
+						score.getMapId(), score.getMapId()));
+				System.err.println(String.format("[ERROR] SQLIntegrityConstraintViolationException | %s%n", Instant.now().toString()));
 				return Optional.empty();
 			}
 			else if (cause instanceof SQLSyntaxErrorException)

@@ -102,10 +102,16 @@ public class RemoveMapsListener extends ListenerAdapter
 
 		// Request map from DB, then delete.
 		int mapId = Integer.parseInt(matcher.group(1));
-		OsuMap map = BotConfig.mowcDb.getMapDao().getMap(mapId);
+
+		Optional<OsuMap> mapRequest = BotConfig.mowcDb.getMapDao().getMap(mapId);
+		if (mapRequest.isEmpty())
+		{
+			sendFailed(event, "Error: map not present in DB.");
+			return Optional.empty();
+		}
+
 		BotConfig.mowcDb.getMapDao().removeMap(mapId);
-		
-		return Optional.of(map);
+		return Optional.of(mapRequest.get());
 	}
 	
 	

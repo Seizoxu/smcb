@@ -75,15 +75,21 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 			
 			user = BotConfig.mowcDb.getUserDao().getUsername(score.getUserId());
 
-			boolean isMapValid = BotConfig.mowcDb.getMapDao().isMapInSubmissionWindow(score.getMapId(),Timestamp.from(score.getTimestamp())).isPresent();
-			if (!isMapValid)
+			boolean isInWindow = BotConfig.mowcDb.getMapDao().isMapInSubmissionWindow(score.getMapId(),Timestamp.from(score.getTimestamp())).isPresent();
+			if (!isInWindow)
 			{
 				sendFailed(event, String.format("Error: Submitted score with score ID [%d](<https://osu.ppy.sh/scores/%d>) is not in the submission window.",
 						score.getScoreId(), score.getScoreId()));
 				return;
 			}
 			
-			map = BotConfig.mowcDb.getMapDao().getMap(score.getMapId());
+			Optional<OsuMap> mapRequest = BotConfig.mowcDb.getMapDao().getMap(score.getMapId());
+			if (mapRequest.isEmpty())
+			{
+				sendFailed(event, String.format("Error: Map with map ID [%d](<https://osu.ppy.sh/b/%d>) does not exist in DB.", score.getMapId(), score.getMapId()));
+				return;
+			}
+			map = mapRequest.get();
 			
 			BotConfig.mowcDb.getScoreDao().callInsertOrUpdateScoreIfHigher(score.getScoreId(), score.getUserId(), score.getMapId(),
 					score.getScore(), String.join(",", score.getMods()), Timestamp.from(score.getTimestamp()));
