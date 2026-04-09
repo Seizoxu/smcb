@@ -13,10 +13,11 @@ import dataStructures.OsuMap;
 public interface DbMapDao
 {
 	@SqlUpdate("""
-			INSERT INTO maps (map_id, mapset_id, end_date, title, artist, mapper, difficulty_name, banner_link, star_rating, ar, od, hp, cs, length_seconds, bpm)
-			VALUES (:map_id, :mapset_id, :end_date, :title, :artist, :mapper, :difficulty_name, :banner_link, :star_rating, :ar, :od, :hp, :cs, :length_seconds, :bpm)
+			INSERT INTO maps (map_id, mapset_id, start_date, end_date, title, artist, mapper, difficulty_name, banner_link, star_rating, ar, od, hp, cs, length_seconds, bpm)
+			VALUES (:map_id, :mapset_id, :start_date, :end_date, :title, :artist, :mapper, :difficulty_name, :banner_link, :star_rating, :ar, :od, :hp, :cs, :length_seconds, :bpm)
 			ON DUPLICATE KEY UPDATE
 				mapset_id = VALUES(mapset_id),
+				start_date = VALUES(start_date),
 				end_date = VALUES(end_date),
 				title = VALUES(title),
 				artist = VALUES(artist),
@@ -34,6 +35,7 @@ public interface DbMapDao
 	void insertMap(
 			@Bind("map_id") int mapId,
 			@Bind("mapset_id") int mapsetId,
+			@Bind("start_date") String startDate,
 			@Bind("end_date") String endDate,
 			@Bind("title") String title,
 			@Bind("artist") String artist,
@@ -64,9 +66,8 @@ public interface DbMapDao
 	@SqlQuery("""
 			SELECT 1 FROM maps
 			WHERE map_id = :map_id
-				AND :score_date >= DATE_SUB(CAST(end_date AS DATETIME), INTERVAL 6 DAY)
+				AND :score_date >= CAST(start_date AS DATETIME)
 				AND :score_date < DATE_ADD(CAST(end_date AS DATETIME), INTERVAL 1 DAY)
-
 			""")
 	Optional<Integer> isMapInSubmissionWindow(@Bind("map_id") int mapId, @Bind("score_date") Timestamp scoreDate);
 }

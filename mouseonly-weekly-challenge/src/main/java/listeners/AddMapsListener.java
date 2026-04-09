@@ -49,7 +49,7 @@ public class AddMapsListener extends ListenerAdapter
 		// add map to db
 		try
 		{
-			BotConfig.mowcDb.getMapDao().insertMap(map.getMapId(), map.getMapsetId(), map.getEndDate(), map.getTitle(), map.getArtist(),
+			BotConfig.mowcDb.getMapDao().insertMap(map.getMapId(), map.getMapsetId(), map.getStartDate(), map.getEndDate(), map.getTitle(), map.getArtist(),
 					map.getMapper(), map.getDifficultyName(), map.getBannerLink(), map.getStarRating(), map.getAr(), map.getOd(), map.getHp(),
 					map.getCs(), map.getLengthSeconds(), map.getBpm());
 		}
@@ -123,6 +123,7 @@ public class AddMapsListener extends ListenerAdapter
 		// Parse and return.
 		JsonObject map = response.get();
 		int mapsetId = map.get("beatmapset_id").getAsInt();
+		String startDate = event.getOption("start-date").getAsString().strip();
 		String endDate = event.getOption("end-date").getAsString().strip();
 		String title = map.get("beatmapset").getAsJsonObject().get("title").getAsString();
 		String artist = map.get("beatmapset").getAsJsonObject().get("artist").getAsString();
@@ -137,7 +138,7 @@ public class AddMapsListener extends ListenerAdapter
 		int bpm = map.get("bpm").getAsInt();
 		String bannerLink = map.get("beatmapset").getAsJsonObject().get("covers").getAsJsonObject().get("cover@2x").getAsString();
 		
-		return Optional.of(new OsuMap(mapId, mapsetId, endDate, title, artist, mapper, difficultyName, bannerLink, starRating, ar, od, hp, cs, lengthSeconds, bpm));
+		return Optional.of(new OsuMap(mapId, mapsetId, startDate, endDate, title, artist, mapper, difficultyName, bannerLink, starRating, ar, od, hp, cs, lengthSeconds, bpm));
 	}
 	
 	

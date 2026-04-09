@@ -1,6 +1,9 @@
 package init;
 
+import java.util.List;
+
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
@@ -8,6 +11,12 @@ public class InitialiseSlashCommands
 {
 	public static void init(JDA jda)
 	{
+//		List<Command> commands = jda.retrieveCommands().complete();
+//		for (Command c : commands)
+//		{
+//			System.out.println(String.format("[%s] %s", c.getId(), c.getFullCommandName()));
+//		}
+
 		jda.updateCommands().addCommands(
 				Commands.slash("submit-score-weekly", "Submits an osu! score to the Mouse-Only Weekly Challenge Sheet.")
 				.addOption(OptionType.STRING, "link", "An osu! score link.", true),
@@ -21,6 +30,7 @@ public class InitialiseSlashCommands
 
 				Commands.slash("add-map", "[Admin CMD] Submits an osu! beatmap to the Mouse-Only Weekly Challenge Database.")
 				.addOption(OptionType.STRING, "link", "An osu! beatmap link/id. Must be a beatmap, and not beatmapSET.", true)
+				.addOption(OptionType.STRING, "start-date", "An SQL date, formatted as YYYY-MM-DD", true)
 				.addOption(OptionType.STRING, "end-date", "An SQL date, formatted as YYYY-MM-DD", true),
 
 				Commands.slash("remove-map", "[Admin CMD] Removes an osu! beatmap from the Mouse-Only Weekly Challenge Database.")

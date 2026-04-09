@@ -131,16 +131,18 @@ public class SubmitScoreWeeklyListener extends ListenerAdapter
 		event.getHook().sendMessageEmbeds(new EmbedBuilder()
 				.setTitle("Score Submitted!")
 				.setDescription(String.format(
-						  "`Beatmap    :` %d | %s [%s]%n"
-						+ "`User ID    :` %d (%s)%n"
+						  "`Beatmap    :` [%d](<https://osu.ppy.sh/beatmapsets/%d#osu/%d>) | %s [%s]%n"
+						+ "`User ID    :` [%d](<https://osu.ppy.sh/users/%d>) (%s)%n"
+						+ "`Score ID   :` [%d](<https://osu.ppy.sh/scores/%d>)%n"
+						+ "`Timestamp  :` %s%n%n"
 						+ "`Total Score:` %s%n"
-						+ "`Mods       :` %s%n"
-						+ "`Timestamp  :` %s%n",
-						map.getMapId(), map.getTitle(), map.getDifficultyName(),
-						score.getUserId(), user.getUsername(),
+						+ "`Mods       :` %s%n",
+						map.getMapId(), map.getMapsetId(), map.getMapId(), map.getTitle(), map.getDifficultyName(),
+						score.getUserId(), score.getUserId(), user.getUsername(),
+						score.getScoreId(), score.getScoreId(),
+						score.getTimestamp(),
 						nf.format(score.getScore()),
-						Arrays.stream(score.getMods()).collect(Collectors.joining(",")),
-						score.getTimestamp())
+						Arrays.stream(score.getMods()).collect(Collectors.joining(",")))
 						)
 				.build())
 		.queue();

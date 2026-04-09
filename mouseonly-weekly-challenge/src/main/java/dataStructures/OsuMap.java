@@ -6,6 +6,7 @@ public class OsuMap
 {
 	private int mapId;
 	private int mapsetId;
+	private String startDate;
 	private String endDate;
 	private String title;
 	private String artist;
@@ -20,12 +21,13 @@ public class OsuMap
 	private int lengthSeconds;
 	private int bpm;
 
-	@ConstructorProperties({"map_id", "mapset_id", "end_date", "title", "artist", "mapper", "difficulty_name", "banner_link", "star_rating", "ar", "od", "hp", "cs", "length_seconds", "bpm"})
-	public OsuMap(int mapId, int mapsetId, String endDate, String title, String artist, String mapper, String difficultyName,
+	@ConstructorProperties({"map_id", "mapset_id", "start_date", "end_date", "title", "artist", "mapper", "difficulty_name", "banner_link", "star_rating", "ar", "od", "hp", "cs", "length_seconds", "bpm"})
+	public OsuMap(int mapId, int mapsetId, String startDate, String endDate, String title, String artist, String mapper, String difficultyName,
 			String bannerLink, double starRating, double ar, double od, double hp, double cs, int lengthSeconds, int bpm)
 	{
 		this.mapId = mapId;
 		this.mapsetId = mapsetId;
+		this.startDate = startDate;
 		this.endDate = endDate;
 		this.title = title;
 		this.artist = artist;
@@ -46,6 +48,9 @@ public class OsuMap
 
 	public int getMapsetId() {return mapsetId;}
 	public void setMapsetId(int mapsetId) {this.mapsetId = mapsetId;}
+
+	public String getStartDate() {return startDate;}
+	public void setStartDate(String startDate) {this.startDate = startDate;}
 
 	public String getEndDate() {return endDate;}
 	public void setEndDate(String endDate) {this.endDate = endDate;}
