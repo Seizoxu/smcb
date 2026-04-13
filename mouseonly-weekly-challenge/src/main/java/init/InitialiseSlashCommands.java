@@ -29,12 +29,12 @@ public class InitialiseSlashCommands
 				Commands.slash("osuverify", "Links your osu! profile to SMCB."),
 
 				Commands.slash("add-map", "[Admin CMD] Submits an osu! beatmap to the Mouse-Only Weekly Challenge Database.")
-				.addOption(OptionType.STRING, "link", "An osu! beatmap link/id. Must be a beatmap, and not beatmapSET.", true)
+				.addOption(OptionType.STRING, "link", "An osu! beatmap link/id. Must be a beatmap, and not beatmapSET. Can be a comma-delimited list.", true)
 				.addOption(OptionType.STRING, "start-date", "An SQL date, formatted as YYYY-MM-DD", true)
 				.addOption(OptionType.STRING, "end-date", "An SQL date, formatted as YYYY-MM-DD", true),
 
 				Commands.slash("remove-map", "[Admin CMD] Removes an osu! beatmap from the Mouse-Only Weekly Challenge Database.")
-				.addOption(OptionType.STRING, "link", "An osu! beatmap link/id. Must be a beatmap, and not beatmapSET.", true),
+				.addOption(OptionType.STRING, "link", "An osu! beatmap link/id. Must be a beatmap, and not beatmapSET. Can be a comma-delimited list.", true),
 
 				Commands.slash("list-maps", "Lists osu! beatmaps from the present Mouse-Only Weekly Challenge.")
 				.addOption(OptionType.STRING, "end-date", "Get maps that end on a certain date.", false),

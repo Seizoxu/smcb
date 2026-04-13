@@ -38,60 +38,70 @@ public class AddMapsListener extends ListenerAdapter
 		event.deferReply().queue();
 		
 		// parse link and get map
-		String link = event.getOption("link").getAsString();
-		Optional<OsuMap> mapRequest = retrieveBeatmap(event, link);
-		if (mapRequest.isEmpty())
-		{
-			return;
-		}
-		OsuMap map = mapRequest.get();
+		String[] links = event.getOption("link").getAsString().split(",");
+		StringBuilder embedDescription = new StringBuilder();
 		
-		// add map to db
-		try
+		for (String link: links)
 		{
-			BotConfig.mowcDb.getMapDao().insertMap(map.getMapId(), map.getMapsetId(), map.getStartDate(), map.getEndDate(), map.getTitle(), map.getArtist(),
-					map.getMapper(), map.getDifficultyName(), map.getBannerLink(), map.getStarRating(), map.getAr(), map.getOd(), map.getHp(),
-					map.getCs(), map.getLengthSeconds(), map.getBpm());
-		}
-		catch (UnableToExecuteStatementException e)
-		{
-			Throwable cause = e.getCause();
+			Optional<OsuMap> mapRequest = retrieveBeatmap(event, link);
+			if (mapRequest.isEmpty())
+			{
+				continue;
+			}
+			OsuMap map = mapRequest.get();
 
-			if (cause instanceof SQLSyntaxErrorException)
+			// add map to db
+			try
 			{
-				sendFailed(event, "Error: SQL Syntax Error.");
-				System.err.println(String.format("[ERROR] SQLSyntaxErrorException | %s%n", Instant.now().toString()));
-				cause.printStackTrace();
-				return;
+				BotConfig.mowcDb.getMapDao().insertMap(map.getMapId(), map.getMapsetId(), map.getStartDate(), map.getEndDate(), map.getTitle(), map.getArtist(),
+						map.getMapper(), map.getDifficultyName(), map.getBannerLink(), map.getStarRating(), map.getAr(), map.getOd(), map.getHp(),
+						map.getCs(), map.getLengthSeconds(), map.getBpm());
+			
+				embedDescription.append(String.format("`%d | %s - %s [%s] (%s)`%n",
+							map.getMapId(), map.getArtist(), map.getTitle(), map.getDifficultyName(), map.getMapper()));
 			}
-			else if (cause instanceof SQLTimeoutException)
+			catch (UnableToExecuteStatementException e)
 			{
-				sendFailed(event, "Error: Unable to send query.");
-				System.err.println(String.format("[ERROR] SQLTimeoutException | %s%n", Instant.now().toString()));
-				cause.printStackTrace();
-				return;
+				Throwable cause = e.getCause();
+	
+				if (cause instanceof SQLSyntaxErrorException)
+				{
+					embedDescription.append(String.format("Error for link `%s`: SQL Syntax Error.%n", link));
+					System.err.println(String.format("[ERROR] SQLSyntaxErrorException | %s%n", Instant.now().toString()));
+					cause.printStackTrace();
+				}
+				else if (cause instanceof SQLTimeoutException)
+				{
+					embedDescription.append(String.format("Error for link `%s`: Unable to send query.%n", link));
+					System.err.println(String.format("[ERROR] SQLTimeoutException | %s%n", Instant.now().toString()));
+					cause.printStackTrace();
+				}
+				else if (cause instanceof SQLException)
+				{
+					embedDescription.append(String.format("Error for link `%s`: SQLException%n```%n%s%n```%n", link, cause.getLocalizedMessage()));
+					System.err.println(String.format("[ERROR] SQLException | %s%n", Instant.now().toString()));
+					cause.printStackTrace();
+				}
+				else
+				{
+					embedDescription.append(String.format("Error for link `%s`: Unknown error.%n", link));
+					System.err.println(String.format("[ERROR] SQLException | %s%n", Instant.now().toString()));
+					cause.printStackTrace();
+				}
 			}
-			else if (cause instanceof SQLException)
+			catch (Exception e)
 			{
-				sendFailed(event, String.format("Error: SQLException%n```%n%s%n```", cause.getLocalizedMessage()));
+				embedDescription.append(String.format("Error for link `%s`: Unknown error.%n", link));
 				System.err.println(String.format("[ERROR] SQLException | %s%n", Instant.now().toString()));
-				cause.printStackTrace();
-				return;
-			}
-			else
-			{
-				sendFailed(event, "Error: Unknown error.");
-				System.err.println(String.format("[ERROR] SQLException | %s%n", Instant.now().toString()));
-				cause.printStackTrace();
-				return;
+				e.printStackTrace();
 			}
 		}
+		
 
 		// send response
 		event.getHook().sendMessageEmbeds(new EmbedBuilder()
-				.setTitle("Submitted Map")
-				.setDescription(String.format("`%d | %s - %s [%s] (%s)`",
-						map.getMapId(), map.getArtist(), map.getTitle(), map.getDifficultyName(), map.getMapper()))
+				.setTitle("Submitted Map(s)")
+				.setDescription(embedDescription.toString())
 				.build()).queue();
 	}
 	
@@ -102,7 +112,7 @@ public class AddMapsListener extends ListenerAdapter
 		Matcher matcher = Pattern.compile("(?:https://)?(?:osu\\.ppy\\.sh/(?:beatmapsets/\\d+#osu/|b/))?(\\d+)$").matcher(link);
 		if (!matcher.matches())
 		{
-			sendFailed(event, "Invalid map link: link format rejected.");
+			sendFailed(event, String.format("Invalid map link `%s`: link format rejected.", link));
 			return Optional.empty();
 		}
 

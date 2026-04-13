@@ -35,56 +35,64 @@ public class RemoveMapsListener extends ListenerAdapter
 		}
 		event.deferReply().queue();
 		
-		OsuMap map;
-		try
-		{
-			String link = event.getOption("link").getAsString();
-			Optional<OsuMap> mapDeleteRequest = retrieveAndDeleteBeatmap(event, link);
-			if (mapDeleteRequest.isEmpty())
-			{
-				return;
-			}
-			
-			map = mapDeleteRequest.get();
-		}
-		catch (UnableToExecuteStatementException e)
-		{
-			Throwable cause = e.getCause();
+		String[] links = event.getOption("link").getAsString().split(",");
+		StringBuilder embedDescription = new StringBuilder();
 
-			if (cause instanceof SQLSyntaxErrorException)
+		for (String link : links)
+		{
+			OsuMap map;
+			try
 			{
-				sendFailed(event, "Error: SQL Syntax Error.");
-				System.err.println(String.format("[ERROR] SQLSyntaxErrorException | %s%n", Instant.now().toString()));
-				cause.printStackTrace();
-				return;
+				Optional<OsuMap> mapDeleteRequest = retrieveAndDeleteBeatmap(event, link);
+				if (mapDeleteRequest.isEmpty())
+				{
+					continue;
+				}
+				
+				map = mapDeleteRequest.get();
+				embedDescription.append(String.format("`%d | %s - %s [%s] (%s)`%n",
+						map.getMapId(), map.getArtist(), map.getTitle(), map.getDifficultyName(), map.getMapper()));
 			}
-			else if (cause instanceof SQLTimeoutException)
+			catch (UnableToExecuteStatementException e)
 			{
-				sendFailed(event, "Error: Unable to send query.");
-				System.err.println(String.format("[ERROR] SQLTimeoutException | %s%n", Instant.now().toString()));
-				cause.printStackTrace();
-				return;
+				Throwable cause = e.getCause();
+	
+				if (cause instanceof SQLSyntaxErrorException)
+				{
+					embedDescription.append(String.format("Error for link `%s`: SQL Syntax Error.%n", link));
+					System.err.println(String.format("[ERROR] SQLSyntaxErrorException | %s%n", Instant.now().toString()));
+					cause.printStackTrace();
+				}
+				else if (cause instanceof SQLTimeoutException)
+				{
+					embedDescription.append(String.format("Error for link `%s`: Unable to send query.%n", link));
+					System.err.println(String.format("[ERROR] SQLTimeoutException | %s%n", Instant.now().toString()));
+					cause.printStackTrace();
+				}
+				else if (cause instanceof SQLException)
+				{
+					embedDescription.append(String.format("Error for link `%s`: SQLException%n```%n%s%n```%n", link, cause.getLocalizedMessage()));
+					System.err.println(String.format("[ERROR] SQLException | %s%n", Instant.now().toString()));
+					cause.printStackTrace();
+				}
+				else
+				{
+					embedDescription.append(String.format("Error for link `%s`: Unknown error.%n", link));
+					System.err.println(String.format("[ERROR] SQLException | %s%n", Instant.now().toString()));
+					cause.printStackTrace();
+				}
 			}
-			else if (cause instanceof SQLException)
+			catch (Exception e)
 			{
-				sendFailed(event, String.format("Error: SQLException%n```%n%s%n```", cause.getLocalizedMessage()));
+				embedDescription.append(String.format("Error for link `%s`: Unknown error.%n", link));
 				System.err.println(String.format("[ERROR] SQLException | %s%n", Instant.now().toString()));
-				cause.printStackTrace();
-				return;
-			}
-			else
-			{
-				sendFailed(event, "Error: Unknown error.");
-				System.err.println(String.format("[ERROR] SQLException | %s%n", Instant.now().toString()));
-				cause.printStackTrace();
-				return;
+				e.printStackTrace();
 			}
 		}
 
 		event.getHook().sendMessageEmbeds(new EmbedBuilder()
 				.setTitle("Removed Map")
-				.setDescription(String.format("`%d | %s - %s [%s] (%s)`",
-						map.getMapId(), map.getArtist(), map.getTitle(), map.getDifficultyName(), map.getMapper()))
+				.setDescription(embedDescription.toString())
 				.build())
 				.queue();
 	}
