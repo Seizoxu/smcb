@@ -1,5 +1,13 @@
 package init;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.tomlj.Toml;
+import org.tomlj.TomlParseResult;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import wrappers.DatabaseWrapper;
 import wrappers.OsuWrapper;
@@ -26,6 +34,9 @@ public class BotConfig
 	public static final String GSHEETS_ID = getVar("GSHEETS_ID");
 	public static final long ADMIN_DISCORD_ID = Long.parseLong(getVar("ADMIN_DISCORD_ID"));
 	
+	public static final Map<String, Double> OSU_MULTIPLIERS_DEFAULT = new HashMap<>();
+	public static final Map<String, Double> OSU_MULTIPLIERS_ADJUSTED = new HashMap<>();
+	
 	private static final int DB_CONNECTION_RETRIES = 10;
 	private static final int DB_CONNECTION_RETRY_DELAY_MS = 3000;
 
@@ -34,6 +45,8 @@ public class BotConfig
 		try
 		{
 			osuApi = new OsuWrapper(OSU_CLIENT_ID, OSU_CLIENT_SECRET, OSU_LEGACY_TOKEN);
+			
+			loadMultipliers();
 			
 			for (int i=0; i<DB_CONNECTION_RETRIES; i++)
 			{
@@ -65,6 +78,22 @@ public class BotConfig
 		catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+	}
+	
+	private static void loadMultipliers() throws IOException
+	{
+		TomlParseResult result = Toml.parse(Paths.get("config/mod-multipliers.toml"));
+		if (!result.errors().isEmpty())
+		{
+			throw new IllegalStateException("Failed to parse TOML: " + result.errors());
+		}
+		
+		String[] mods = {"EZ", "NF", "HT", "HR", "SD", "PF", "DT", "NC", "HD", "FL", "SO", "CL"};
+		for (String mod : mods)
+		{
+			OSU_MULTIPLIERS_DEFAULT.put(mod, result.getDouble("multipliers.default." + mod));
+			OSU_MULTIPLIERS_ADJUSTED.put(mod, result.getDouble("multipliers.adjusted." + mod));
 		}
 	}
 	

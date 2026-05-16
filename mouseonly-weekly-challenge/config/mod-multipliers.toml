@@ -1,0 +1,32 @@
+[multipliers.default]
+EZ = 0.5
+NF = 0.5
+HT = 0.3
+
+HR = 1.06
+SD = 1.0
+PF = 1.0
+DT = 1.1
+NC = 1.1
+HD = 1.06
+FL = 1.12
+
+SO = 0.9
+CL = 0.96
+
+
+[multipliers.adjusted]
+EZ = 0.9
+NF = 0.5
+HT = 0.3
+
+HR = 1.1
+SD = 1.0
+PF = 1.0
+DT = 1.5
+NC = 1.5
+HD = 1.06
+FL = 1.2
+
+SO = 0.9
+CL = 1.0

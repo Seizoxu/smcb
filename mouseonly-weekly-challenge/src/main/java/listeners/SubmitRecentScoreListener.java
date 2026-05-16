@@ -192,19 +192,17 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 			return Optional.empty();
 		}
 		
-		// Remove CL debuff.
-		if (modsList.contains("CL"))
+		// Normalize and adjust.
+		double adjustedScore = totalScore;
+		for (String mod : modsList)
 		{
-			totalScore = (int)Math.round((double)totalScore/0.96);
+			double normalizationMultiplier = BotConfig.OSU_MULTIPLIERS_DEFAULT.getOrDefault(mod, 1d);
+			double adjustedMultiplier = BotConfig.OSU_MULTIPLIERS_ADJUSTED.getOrDefault(mod, 1d);
+
+			adjustedScore = (adjustedMultiplier * adjustedScore) / normalizationMultiplier;
 		}
 
-		// Add EZ multiplier
-		//TODO: make this configurable later.
-		if (modsList.contains("EZ"))
-		{
-			totalScore = (int)Math.round((double)totalScore*1.8);
-		}
-		
+		totalScore = (int)Math.round(adjustedScore);
 		return Optional.of(new OsuScore(scoreId, userId, beatmapId, totalScore, modsList.toArray(new String[0]), timestamp));
 	}
 	

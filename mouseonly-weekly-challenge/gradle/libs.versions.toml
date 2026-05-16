@@ -11,6 +11,7 @@ google-auth-library = "1.20.0"
 google-sheets = "v4-rev20220927-2.0.0"
 jdbi3 = "3.49.0"
 mysql-connector = "9.2.0"
+tomlj = "1.1.1"
 
 [libraries]
 dotenv = { group = "io.github.cdimascio", name = "java-dotenv", version.ref = "dotenv" }
@@ -23,3 +24,4 @@ google-sheets = { group = "com.google.apis", name = "google-api-services-sheets"
 jdbi-core = { group = "org.jdbi", name = "jdbi3-core", version.ref = "jdbi3" }
 jdbi-sqlobject = { group = "org.jdbi", name = "jdbi3-sqlobject", version.ref = "jdbi3" }
 mysql-connector = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysql-connector" }
+tomlj = { group = "org.tomlj", name = "tomlj", version.ref = "tomlj" }
