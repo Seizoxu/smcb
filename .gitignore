@@ -36,3 +36,6 @@ py-env/
 
 # MySQL data backup
 02_data.sql
+
+# Backup files
+backups/*.tar.gz
