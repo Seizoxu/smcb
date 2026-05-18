@@ -223,6 +223,7 @@ public class SubmitRecentScoreListener extends ListenerAdapter
 				sendFailed(event, String.format(
 						"Error: Submitted score ID [%d](<https://osu.ppy.sh/scores/%d>) that refers to map ID [%d](<https://osu.ppy.sh/b/%d>) is not in the weekly map list",
 						score.getScoreId(), score.getScoreId(), score.getMapId(), score.getMapId()));
+				return Optional.empty();
 			}
 
 			boolean isMapValid = BotConfig.mowcDb.getMapDao().isMapInSubmissionWindow(score.getMapId(),Timestamp.from(score.getTimestamp())).isPresent();
